@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Portfolio.Models;
 using System.Diagnostics;
 
 namespace Portfolio.Controllers
 {
-    public class HomeController : Controller
+    public class SectionController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<SectionController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public SectionController(ILogger<SectionController> logger)
         {
             _logger = logger;
         }
