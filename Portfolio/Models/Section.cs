@@ -10,5 +10,6 @@ namespace Portfolio.Models
         public string SectionName { get; set; } = "";
         public string SectionDescription { get; set; } = "";
         public bool IsHidden { get; set; }
+        public int Order { get; set; }
     }
 }
