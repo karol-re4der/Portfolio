@@ -13,7 +13,11 @@ namespace Portfolio.Models
         public DateTime AlbumDateTime { get; set; }
         public bool IsHidden { get; set; }
 
-        [ForeignKey("Photo")]
         public int CoverPhotoId { get; set; }
+        [ForeignKey("CoverPhotoId")]
+        public Photo CoverPhoto { get; set; }
+
+        public List<Section> Sections { get; set; }
+        public List<AlbumSection> AlbumsSections { get; set; }
     }
 }

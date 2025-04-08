@@ -1,0 +1,46 @@
+﻿@using Portfolio.Models.ViewModels
+@model SectionViewModel
+
+<section class="py-5 text-center container bg-body-primary m-0 mw-100">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">@Model.Section.SectionName</h1>
+            <p class="lead text-body-secondary">@Model.Section.SectionDescription</p>
+            <p>
+                <a href="#" class="btn btn-primary my-2">Main call to action</a>
+                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<div class="album py-5 bg-body-primary">
+    <div class="container">
+        <hr class="featurette-divider">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+            @foreach(Album album in Model.Section.Albums)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="ratio" style="--bs-aspect-ratio: 125%;">
+                            <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@album.CoverPhoto.Path" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
+                        </div>
+                        <div class="card-body d-flex">
+                            <strong class="card-text me-auto">
+                                @album.AlbumName
+                            </strong>
+                            <small class="text-body-secondary">
+                                @album.AlbumDateTime.ToString("MMM yyyy")
+                            </small>
+                            <a href="@Url.Action("Album", "Gallery", new {album=album.AlbumName})" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <hr class="featurette-divider">
+    </div>
+</div>

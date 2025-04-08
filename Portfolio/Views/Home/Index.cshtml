@@ -13,7 +13,7 @@
     </div>
     <div class="carousel-inner">
         <div class="carousel-item">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
+            <img src="res/photo/placeholder_hor_1145.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption text-start">
                     <h1>Example headline.</h1>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="carousel-item">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
+            <img src="res/photo/placeholder_hor_1113.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption">
                     <h1>Another example headline.</h1>
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="carousel-item active">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
+            <img src="res/photo/placeholder_hor_0360.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption text-end">
                     <h1>One more for good measure.</h1>
@@ -58,12 +58,12 @@
 
     @{int i = 0;}
     @foreach(Section sect in Model.Sections){
-        <a href="www.google.pl" class="link" style="text-decoration:none">
-        <div class="row featurette">
+        <div class="row featurette position-relative">
+            <a href="@Url.Action("Section", "Gallery", new {section=sect.SectionName})" class="stretched-link"></a>
             @if (i % 2 == 1)
             {
                 <div class="col-md-5">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"><title>@sect.SectionName</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect></svg>
+                    <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"/>
                 </div>
             }
             <div class="col-md-7">
@@ -75,11 +75,10 @@
             @if (i % 2 == 0)
             {
                 <div class="col-md-5">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"><title>@sect.SectionName</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect></svg>
+                    <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
                 </div>
             }
         </div>
-        </a>
         <hr class="featurette-divider">
         i++;
     }

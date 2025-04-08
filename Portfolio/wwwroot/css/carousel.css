@@ -16,6 +16,11 @@
     height: 32rem;
 }
 
+.carousel-image {
+    object-fit: cover;
+    object-position: 50% 25%;
+}
+
 
 /* MARKETING CONTENT
 -------------------------------------------------- */
@@ -44,6 +49,10 @@
 /* rtl:begin:remove */
 .featurette-heading {
     letter-spacing: -.05rem;
+}
+
+.featurette-image {
+    border-radius: 2px;
 }
 
 /* rtl:end:remove */

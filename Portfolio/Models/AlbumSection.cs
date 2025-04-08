@@ -1,19 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Portfolio.Models
+﻿namespace Portfolio.Models
 {
     public class AlbumSection
     {
-        [Key]
-        public int Id { get; set; }
-
-        public int Order { get; set; }
-
-        [ForeignKey("Album")]
         public int AlbumId { get; set; }
+        public Album Album { get; set; }
 
-        [ForeignKey("Section")]
         public int SectionId { get; set; }
+        public Section Section { get; set; }
     }
 }

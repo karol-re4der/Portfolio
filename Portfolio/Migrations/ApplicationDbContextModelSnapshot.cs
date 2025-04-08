@@ -49,6 +49,8 @@ namespace Portfolio.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CoverPhotoId");
+
                     b.ToTable("Album");
                 });
 
@@ -76,22 +78,15 @@ namespace Portfolio.Migrations
 
             modelBuilder.Entity("Portfolio.Models.AlbumSection", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("AlbumId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<int>("SectionId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("AlbumId", "SectionId");
+
+                    b.HasIndex("SectionId");
 
                     b.ToTable("AlbumSection");
                 });
@@ -139,6 +134,9 @@ namespace Portfolio.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
+                    b.Property<int>("SectionCoverId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SectionDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -149,7 +147,60 @@ namespace Portfolio.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SectionCoverId");
+
                     b.ToTable("Section");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.Album", b =>
+                {
+                    b.HasOne("Portfolio.Models.Photo", "CoverPhoto")
+                        .WithMany()
+                        .HasForeignKey("CoverPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CoverPhoto");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.AlbumSection", b =>
+                {
+                    b.HasOne("Portfolio.Models.Album", "Album")
+                        .WithMany("AlbumsSections")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Portfolio.Models.Section", "Section")
+                        .WithMany("AlbumsSections")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+
+                    b.Navigation("Section");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.Section", b =>
+                {
+                    b.HasOne("Portfolio.Models.Photo", "SectionCover")
+                        .WithMany()
+                        .HasForeignKey("SectionCoverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SectionCover");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.Album", b =>
+                {
+                    b.Navigation("AlbumsSections");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.Section", b =>
+                {
+                    b.Navigation("AlbumsSections");
                 });
 #pragma warning restore 612, 618
         }

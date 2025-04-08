@@ -3,6 +3,7 @@ using Portfolio.Data;
 using Portfolio.Models;
 using Portfolio.Models.ViewModels;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace Portfolio.Controllers
 {
@@ -20,7 +21,7 @@ namespace Portfolio.Controllers
         public IActionResult Index()
         {
             HomeViewModel model = new HomeViewModel();
-            model.Sections = _db.Section.Where(x=>!x.IsHidden).OrderBy(x=>x.Order).ToList();
+            model.Sections = _db.Section.Where(x=>!x.IsHidden).OrderBy(x=>x.Order).Include("SectionCover").ToList();
 
             return View(model);
         }
