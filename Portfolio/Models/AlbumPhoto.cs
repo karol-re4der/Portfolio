@@ -5,15 +5,10 @@ namespace Portfolio.Models
 {
     public class AlbumPhoto
     {
-        [Key]
-        public int Id { get; set; }
-
-        public int Order { get; set; }
-
-        [ForeignKey("Album")]
         public int AlbumId { get; set; }
+        public Album Album { get; set; }
 
-        [ForeignKey("Photo")]
-        public int SectionId { get; set; }
+        public int PhotoId { get; set; }
+        public Photo Photo { get; set; }
     }
 }

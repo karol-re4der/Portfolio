@@ -56,22 +56,15 @@ namespace Portfolio.Migrations
 
             modelBuilder.Entity("Portfolio.Models.AlbumPhoto", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("AlbumId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Order")
+                    b.Property<int>("PhotoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SectionId")
-                        .HasColumnType("int");
+                    b.HasKey("AlbumId", "PhotoId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("PhotoId");
 
                     b.ToTable("AlbumPhoto");
                 });
@@ -155,12 +148,31 @@ namespace Portfolio.Migrations
             modelBuilder.Entity("Portfolio.Models.Album", b =>
                 {
                     b.HasOne("Portfolio.Models.Photo", "CoverPhoto")
-                        .WithMany()
+                        .WithMany("AlbumCovers")
                         .HasForeignKey("CoverPhotoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CoverPhoto");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.AlbumPhoto", b =>
+                {
+                    b.HasOne("Portfolio.Models.Album", "Album")
+                        .WithMany("AlbumsPhotos")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Portfolio.Models.Photo", "Photo")
+                        .WithMany("AlbumsPhotos")
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+
+                    b.Navigation("Photo");
                 });
 
             modelBuilder.Entity("Portfolio.Models.AlbumSection", b =>
@@ -195,7 +207,16 @@ namespace Portfolio.Migrations
 
             modelBuilder.Entity("Portfolio.Models.Album", b =>
                 {
+                    b.Navigation("AlbumsPhotos");
+
                     b.Navigation("AlbumsSections");
+                });
+
+            modelBuilder.Entity("Portfolio.Models.Photo", b =>
+                {
+                    b.Navigation("AlbumCovers");
+
+                    b.Navigation("AlbumsPhotos");
                 });
 
             modelBuilder.Entity("Portfolio.Models.Section", b =>

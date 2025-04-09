@@ -14,10 +14,11 @@ namespace Portfolio.Models
         public bool IsHidden { get; set; }
 
         public int CoverPhotoId { get; set; }
-        [ForeignKey("CoverPhotoId")]
         public Photo CoverPhoto { get; set; }
 
         public List<Section> Sections { get; set; }
         public List<AlbumSection> AlbumsSections { get; set; }
+        public List<Photo> Photos { get; set; }
+        public List<AlbumPhoto> AlbumsPhotos { get; set; }
     }
 }

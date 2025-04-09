@@ -13,5 +13,10 @@ namespace Portfolio.Models
         public bool IsHidden { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
+        public List<Album> Albums { get; set; }
+        public List<AlbumPhoto> AlbumsPhotos { get; set; }
+
+        public List<Album> AlbumCovers { get; set; }
     }
 }

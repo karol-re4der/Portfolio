@@ -5,6 +5,7 @@ using Portfolio.Models;
 using Portfolio.Models.ViewModels;
 using System.Diagnostics;
 using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Portfolio.Controllers
 {
@@ -35,7 +36,17 @@ namespace Portfolio.Controllers
 
         public IActionResult Album(string album)
         {
-            return View();
+            AlbumViewModel viewModel = new AlbumViewModel
+            {
+                Album = _db.Album.Include("CoverPhoto").Include("Photos").FirstOrDefault(x => x.AlbumName.Equals(album))
+            };
+
+            if (viewModel.Album == null)
+            {
+                return NotFound();
+            }
+
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

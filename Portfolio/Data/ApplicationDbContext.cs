@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Portfolio.Models;
+using System.Reflection.Metadata;
 
 namespace Portfolio.Data
 {
@@ -17,6 +18,16 @@ namespace Portfolio.Data
                 .HasMany(e => e.Albums)
                 .WithMany(e => e.Sections)
                 .UsingEntity<AlbumSection>();
+
+            modelBuilder.Entity<Photo>()
+                .HasMany(e => e.Albums)
+                .WithMany(e => e.Photos)
+            .UsingEntity<AlbumPhoto>();
+
+            modelBuilder.Entity<Album>()
+                .HasOne(e=>e.CoverPhoto)
+                .WithMany(e=>e.AlbumCovers)
+                .HasForeignKey(e => e.CoverPhotoId);
         }
 
         public DbSet<Photo> Photo { get; set; }
