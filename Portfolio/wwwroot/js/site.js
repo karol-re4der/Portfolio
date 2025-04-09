@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿//Handle single photo display for gallery
+const modal = document.getElementById('singlePhotoModal')
+if (modal) {
+    modal.addEventListener('show.bs.modal', event => {
+        const imagePath = event.relatedTarget.getAttribute('data-bs-path')
 
-// Write your JavaScript code.
+        const image = modal.querySelector('.modal-body img')
+
+        image.src = imagePath
+    })
+}
