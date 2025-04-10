@@ -2,7 +2,7 @@
 @model AlbumViewModel
 
 <div class="modal fade" id="singlePhotoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog p-4 mb-0 mt-0 modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
                 <img src=@Model.Album.CoverPhoto.Path class="img-fluid" alt="...">
@@ -33,7 +33,7 @@
             {
                 <div class="col m-0 p-0">
                     <img src=@photo.Path class="img-fluid" alt="...">
-                    <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-target="#singlePhotoModal"></a>
+                    <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-width="@photo.Width" data-bs-height="@photo.Height" data-bs-target="#singlePhotoModal"></a>
                 </div>
             }
         </div>
