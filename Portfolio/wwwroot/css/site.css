@@ -20,3 +20,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.headerImage {
+    background-repeat: no-repeat;
+    background-attachment:scroll;
+    background-position-y:25%;
+    background-size: cover;
+}
