@@ -26,6 +26,11 @@ namespace Portfolio.Controllers
             return View(model);
         }
 
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

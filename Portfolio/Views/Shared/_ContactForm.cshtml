@@ -1,0 +1,57 @@
+﻿<div id="contact-form" class="container text-center">
+    <hr class="m-2" />
+    <h1>Zainteresowany zdjęciami?</h1>
+    <p class="opacity-75">Skontaktuj się ze mną na social mediach:</p>
+
+    <hr class="m-2" />
+    <div class="row">
+        <ul class="navbar-nav list-group list-group-horizontal justify-content-center">
+            <partial name="/Views/Shared/_SocialIcons.cshtml" />
+        </ul>
+    </div>
+    <hr class="m-2"/>
+
+    <div class="m-2">
+        <p class="opacity-75 mt-4 mb-0">Lub napisz na maila:</p>
+        <form>
+            <div class="row justify-content-center m-4">
+                <div class="col-12 col-md-4">
+                  <label for="username" class="form-label">Twoje imie</label>
+                  <div class="input-group has-validation">
+                    <input type="text" class="form-control" id="username" placeholder="Imie" required="">
+                  <div class="invalid-feedback">
+                      Your username is required.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label for="email" class="form-label">Twój email</label>
+                    <div class="input-group has-validation">
+                        <input type="email" class="form-control" id="email" placeholder="ty@example.com">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center m-4">
+                <div class="col-12 col-md-10">
+                    <label for="content-tiny" class="form-label">Twoja wiadomość</label>
+                    <textarea id="content-tiny"></textarea>
+                    <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center m-4">
+                <div class="col-4">
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Wyślij!</button>
+                </div>
+            </div>
+        </form>
+        <hr class="m-2">
+    </div>
+</div>

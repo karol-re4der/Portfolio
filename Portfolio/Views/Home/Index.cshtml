@@ -16,9 +16,9 @@
             <img src="res/photo/placeholder_hor_1145.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption text-start">
-                    <h1>Example headline.</h1>
-                    <p class="opacity-75">Some representative placeholder content for the first slide of the carousel.</p>
-                    <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
+                    <h1>Lorem Ipsum</h1>
+                    <p class="opacity-75">Dolor Sit Amet</p>
+                    <p><a class="btn btn-lg btn-primary" href="#">Albumy</a></p>
                 </div>
             </div>
         </div>
@@ -26,9 +26,9 @@
             <img src="res/photo/placeholder_hor_1113.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>Another example headline.</h1>
-                    <p>Some representative placeholder content for the second slide of the carousel.</p>
-                    <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+                    <h1>Hej! Tu Karol :)</h1>
+                    <p class="opacity-75">Zapraszam Cię do obejrzenia mojego portfolio!</p>
+                    <p><a class="btn btn-lg btn-primary" href="#display-section">Albumy</a></p>
                 </div>
             </div>
         </div>
@@ -36,9 +36,9 @@
             <img src="res/photo/placeholder_hor_0360.jpg" class="carousel-image w-100 h-100"/>
             <div class="container">
                 <div class="carousel-caption text-end">
-                    <h1>One more for good measure.</h1>
-                    <p>Some representative placeholder content for the third slide of this carousel.</p>
-                    <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
+                    <h1>Zainteresowany zdjęciami?</h1>
+                    <p class="opacity-75">Skontaktuj się ze mną!</p>
+                    <p><a class="btn btn-lg btn-primary" href="#contact-form">Kontakt</a></p>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
     </button>
 </div>
 
-<div class="container">
+<div class="container" id="display-section">
     <hr class="featurette-divider">
 
     @{int i = 0;}
@@ -83,3 +83,9 @@
         i++;
     }
 </div>
+
+<div class="container">
+    <partial name="/Views/Shared/_ContactForm.cshtml" />
+    <hr class="featurette-divider">
+</div>
+

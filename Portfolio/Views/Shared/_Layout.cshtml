@@ -48,20 +48,9 @@
                 </div>
 
                 @* Social Icons *@
-                <div>
+                <div class="d-none d-sm-block">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="btn btn-link bi bi-instagram text-secondary" href="https://www.instagram.com/fotokozak_/"></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-link bi bi-facebook text-secondary" href="https://www.facebook.com/share/19x5PypZNz/"></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-link bi bi-cup-hot text-secondary" href="https://buymeacoffee.com/fotokozak"></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-link bi bi-brilliance text-secondary" href="https://fotokozak.myportfolio.com/home"></a>
-                        </li>
+                        <partial name="/Views/Shared/_SocialIcons.cshtml" />
                     </ul>
                 </div>
             </div>
@@ -76,6 +65,13 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
+    <script src="https://cdn.tiny.cloud/1/688v3eg9dq8wujzjpodph7fi557sl4r1ubasxyc6h5cjsqhl/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea#content-tiny',
+            menubar: ''
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
