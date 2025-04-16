@@ -56,31 +56,39 @@
 <div class="container" id="display-section">
     <hr class="featurette-divider">
 
-    @{int i = 0;}
-    @foreach(Section sect in Model.Sections){
-        <div class="row featurette position-relative">
-            <a href="@Url.Action("Section", "Gallery", new {section=sect.SectionName})" class="stretched-link"></a>
-            @if (i % 2 == 1)
-            {
-                <div class="col-md-5">
-                    <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"/>
-                </div>
-            }
-            <div class="col-md-7">
-                <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
-                <p class="lead">
-                    @sect.SectionDescription
-                </p>
-            </div>
-            @if (i % 2 == 0)
-            {
-                <div class="col-md-5">
-                    <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
-                </div>
-            }
-        </div>
+    @if(Model.Sections==null || Model.Sections.Count == 0)
+    {
+        <partial name="/Views/Shared/_NoContent.cshtml" />
         <hr class="featurette-divider">
-        i++;
+    }
+    else
+    {
+        int i = 0;
+        @foreach(Section sect in Model.Sections){
+            <div class="row featurette position-relative">
+                <a href="@Url.Action("Section", "Gallery", new {section=sect.SectionName})" class="stretched-link"></a>
+                @if (i % 2 == 1)
+                {
+                    <div class="col-md-5">
+                        <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"/>
+                    </div>
+                }
+                <div class="col-md-7">
+                    <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
+                    <p class="lead">
+                        @sect.SectionDescription
+                    </p>
+                </div>
+                @if (i % 2 == 0)
+                {
+                    <div class="col-md-5">
+                        <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
+                    </div>
+                }
+            </div>
+            <hr class="featurette-divider">
+            i++;
+        }
     }
 </div>
 

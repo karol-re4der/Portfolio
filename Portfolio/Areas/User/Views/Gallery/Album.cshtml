@@ -28,15 +28,22 @@
     <div class="container">
         <hr class="featurette-divider">
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" data-masonry="{&quot;percentPosition&quot;: true }">
-            @foreach(Photo photo in Model.Album.Photos)
-            {
-                <div class="col m-0 p-0">
-                    <img src=@photo.Path class="img-fluid" alt="...">
-                    <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-width="@photo.Width" data-bs-height="@photo.Height" data-bs-target="#singlePhotoModal"></a>
-                </div>
-            }
-        </div>
+        @if (Model.Album==null || Model.Album.Photos==null || Model.Album.Photos.Count()==0)
+        {
+            <partial name="/Views/Shared/_NoContent.cshtml" />
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" data-masonry="{&quot;percentPosition&quot;: true }">
+                @foreach(Photo photo in Model.Album.Photos)
+                {
+                    <div class="col m-0 p-0">
+                        <img src=@photo.Path class="img-fluid" alt="...">
+                        <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-width="@photo.Width" data-bs-height="@photo.Height" data-bs-target="#singlePhotoModal"></a>
+                    </div>
+                }
+            </div>
+        }
 
         <hr class="featurette-divider">
     </div>
