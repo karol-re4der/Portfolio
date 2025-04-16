@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Portfolio.Data;
+using Portfolio.DataAccess.Data;
 using Portfolio.Models;
-using Portfolio.Models.ViewModels;
+using Portfolio.Models.Models.ViewModels;
 using System.Diagnostics;
 using System.Linq;
 using static System.Collections.Specialized.BitVector32;
 
-namespace Portfolio.Controllers
+namespace Portfolio.Areas.User.Controllers
 {
+    [Area("User")]
     public class GalleryController : Controller
     {
         private readonly ILogger<GalleryController> _logger;
@@ -22,10 +23,11 @@ namespace Portfolio.Controllers
 
         public IActionResult Section(string section)
         {
-            SectionViewModel viewModel = new SectionViewModel{
+            SectionViewModel viewModel = new SectionViewModel
+            {
                 Section = _db.Section.Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.SectionName.Equals(section))
             };
-            
+
             if (viewModel.Section == null)
             {
                 return NotFound();

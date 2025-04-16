@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Data;
-using Portfolio.Models;
-using Portfolio.Models.ViewModels;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.DataAccess.Data;
+using Portfolio.Models.Models.ViewModels;
 
-namespace Portfolio.Controllers
+namespace Portfolio.Areas.User.Controllers
 {
+    [Area("User")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,7 +21,7 @@ namespace Portfolio.Controllers
         public IActionResult Index()
         {
             HomeViewModel model = new HomeViewModel();
-            model.Sections = _db.Section.Where(x=>!x.IsHidden).OrderBy(x=>x.Order).Include("SectionCover").ToList();
+            model.Sections = _db.Section.Where(x => !x.IsHidden).OrderBy(x => x.Order).Include("SectionCover").ToList();
 
             return View(model);
         }
@@ -29,6 +29,11 @@ namespace Portfolio.Controllers
         public IActionResult Contact()
         {
             return View();
+        }
+
+        public IActionResult Admin()
+        {
+            return Redirect("/Identity/Account/Login/");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
