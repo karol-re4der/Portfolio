@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Portfolio.DataAccess\Portfolio.DataAccess.csproj" />
     <ProjectReference Include="..\Portfolio.Models\Portfolio.Models.csproj" />
+    <ProjectReference Include="..\Portfolio.Utility\Portfolio.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

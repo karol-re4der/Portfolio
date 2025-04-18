@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Portfolio.Models
+namespace Portfolio.Models.Models
 {
     public class Photo
     {

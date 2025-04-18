@@ -5,9 +5,11 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio", "Portfolio\Portfolio.csproj", "{BBAF7AAD-C6DB-4118-BEB2-7B8DA8D4DB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.DataAccess", "Portfolio.DataAccess\Portfolio.DataAccess.csproj", "{791D181B-B944-4CD0-BB51-4F420B9EF21A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.DataAccess", "Portfolio.DataAccess\Portfolio.DataAccess.csproj", "{791D181B-B944-4CD0-BB51-4F420B9EF21A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Models", "Portfolio.Models\Portfolio.Models.csproj", "{250B4AFE-369E-4178-84E7-54DEB632AB32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Models", "Portfolio.Models\Portfolio.Models.csproj", "{250B4AFE-369E-4178-84E7-54DEB632AB32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Utility", "Portfolio.Utility\Portfolio.Utility.csproj", "{F93D2879-4714-40A1-A37A-CF637430B2F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{250B4AFE-369E-4178-84E7-54DEB632AB32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{250B4AFE-369E-4178-84E7-54DEB632AB32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{250B4AFE-369E-4178-84E7-54DEB632AB32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F93D2879-4714-40A1-A37A-CF637430B2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93D2879-4714-40A1-A37A-CF637430B2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93D2879-4714-40A1-A37A-CF637430B2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93D2879-4714-40A1-A37A-CF637430B2F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

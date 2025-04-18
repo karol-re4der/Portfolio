@@ -25,7 +25,7 @@ namespace Portfolio.Areas.User.Controllers
         {
             SectionViewModel viewModel = new SectionViewModel
             {
-                Section = _db.Section.Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.SectionName.Equals(section))
+                Section = _db.Section.Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
 
             if (viewModel.Section == null)
@@ -44,7 +44,7 @@ namespace Portfolio.Areas.User.Controllers
         {
             AlbumViewModel viewModel = new AlbumViewModel
             {
-                Album = _db.Album.Include("CoverPhoto").Include("Photos").FirstOrDefault(x => x.AlbumName.Equals(album))
+                Album = _db.Album.Include("CoverPhoto").Include("Photos").FirstOrDefault(x => x.UrlRef.Equals(album))
             };
 
             if (viewModel.Album == null)

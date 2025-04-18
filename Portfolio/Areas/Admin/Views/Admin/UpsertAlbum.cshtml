@@ -1,0 +1,93 @@
+﻿@model UpsertAlbumViewModel
+
+<div class="container">
+	<hr />
+	@if (Model.Album.Id == 0)
+	{
+		<h1>Nowy Album</h1>
+	}
+	else
+	{
+		<h1>Edytuj Album</h1>
+	}
+	<hr />
+	<form asp-action="UpsertAlbum" id="upsert-album" enctype="multipart/form-data" autocomplete="off">
+		<input hidden asp-for="Album.Id" type="text" class="list-group-item" id="upsert-album-id">
+
+		<div class="row">
+			<div class="col-12 col-sm-8">
+				<div class=row>
+					<div class="col-12 col-sm-6">
+					<label asp-for="Album.AlbumName" for="upsert-album-name" class="form-label"></label>
+						<input asp-for="Album.AlbumName" class="form-control" type="text" id="upsert-album-name" oninput="duplicateContent(this, document.getElementById('upsert-album-ref'))" />
+					<span style="display:block;" asp-validation-for="Album.AlbumName" class="text-danger mb-3"></span>
+					</div>
+					<div class="col-12 col-sm-6">
+						<label asp-for="Album.UrlRef" for="upsert-album-ref" class="form-label"></label>
+						<div class="input-group">
+							<span class="input-group-text">?album=</span>
+							<input asp-for="Album.UrlRef" class="form-control" type="text" id="upsert-album-ref" />
+						</div>
+						<span style="display:block;" asp-validation-for="Album.UrlRef" class="text-danger mb-3"></span>
+					</div>
+				</div>
+
+				<label asp-for="Album.AlbumDescription" for="upsert-album-description" class="form-label"></label>
+				<textarea asp-for="Album.AlbumDescription" class="form-control mb-3" id="upsert-album-description" rows="4"></textarea>
+
+				<label for="upsert-album-sections" class="form-label">Sections</label>
+				<select asp-for="SectionIdSelected" asp-items="@Model.SectionsAvailable" multiple size="6" class="form-select" id="upsert-album-sections"></select>
+				<span style="display:block;" asp-validation-for="SectionIdSelected" class="text-danger mb-3"></span>
+
+				<div class="col-12 col-sm-4">
+					<label asp-for="Album.AlbumDateTime" for="upsert-album-datetime" class="form-label"></label>
+					<input asp-for="Album.AlbumDateTime" class="form-control mb-3" type="date" id="upsert-album-datetime" />
+				</div>
+
+				<div class="form-check form-check-inline">
+					<input asp-for="Album.IsHidden" class="form-check-input mb-3" type="checkbox" id="upsert-album-hidden" />
+					<label asp-for="Album.IsHidden" for="upsert-album-hidden" class="form-label"></label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input asp-for="Album.IsNSFW" class="form-check-input mb-3" type="checkbox" id="upsert-album-NSFW" />
+					<label asp-for="Album.IsNSFW" for="upsert-album-NSFW" class="form-label"></label>
+				</div>
+			</div>
+			<hr class="d-sm-none mt-3"/>
+			<div class="col-12 col-sm-4">
+				<label asp-for="Album.CoverPhoto" for="upsert-album-cover" class="form-label"></label>
+				@if (Model.Album.CoverPhoto != null)
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@Model.Album.CoverPhoto.Path" />
+				}
+				else
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
+				}
+				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-album-cover" onchange="refreshPreview(this.files, document.getElementById('upsert-preview'))" />
+			</div>
+		</div>
+		<hr />
+		<button class="btn btn-outline-primary" type="submit">
+		@if(Model.Album.Id==0)
+		{
+			<div>Stwórz</div>
+		}
+		else
+		{
+			<div>Edytuj</div>
+		}
+		</button>
+		@if(Model.Album.Id==0)
+		{
+			<button class="btn btn-outline-primary" type="reset" onclick="setPreview('@ImageUtility.GetPlaceholder(true)', document.getElementById('upsert-preview'))">Wyczyść</button>
+		}
+		<hr />
+	</form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/imagePreview.js"></script>
+	<script src="~/js/upsertUtility.js"></script>
+}

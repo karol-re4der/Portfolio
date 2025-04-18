@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Portfolio.DataAccess.Data;
 namespace Portfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418115730_Album and section url refs")]
+    partial class Albumandsectionurlrefs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,13 +239,14 @@ namespace Portfolio.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("AlbumDescription")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AlbumName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CoverPhotoId")
+                    b.Property<int>("CoverPhotoId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsHidden")
@@ -412,7 +416,9 @@ namespace Portfolio.Migrations
                 {
                     b.HasOne("Portfolio.Models.Models.Photo", "CoverPhoto")
                         .WithMany("AlbumCovers")
-                        .HasForeignKey("CoverPhotoId");
+                        .HasForeignKey("CoverPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CoverPhoto");
                 });

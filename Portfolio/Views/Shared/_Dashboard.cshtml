@@ -1,0 +1,50 @@
+﻿@using Portfolio.Areas.Identity.Pages.Account.Manage
+<div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="dashboard-offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">Admin Dashboard</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <hr />
+            <p class="text-center">Add Content</p>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li>
+                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection" class="btn btn-outline-primary border-0 w-100 text-start">
+                    <i class="bi bi-images"></i>
+                    Add Section
+                </a>
+            </li>
+            <li>
+                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" class="btn btn-outline-primary border-0 w-100 text-start">
+                    <i class="bi bi-images"></i>
+                    Add Album
+                </a>
+            </li>
+            <li>
+                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhotos" class="btn btn-outline-primary border-0 w-100 text-start">
+                    <i class="bi bi-images"></i>
+                    Add Photo
+                </a>
+            </li>
+        </ul>
+        <hr />
+            <p class="text-center">Account</p>
+        <hr />
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li>
+                <a class="btn btn-outline-primary border-0 w-100 text-start" href="/Identity/Account/Manage/Index">
+                    <i class="bi bi-person-fill"></i>
+                    Account
+                </a>
+            </li>
+            <li>
+                <a class="btn btn-outline-primary border-0 w-100 text-start" href="/Identity/Account/Logout">
+                    <i class="bi bi-door-open-fill"></i>
+                    Log Out
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

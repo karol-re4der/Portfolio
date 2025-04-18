@@ -1,4 +1,6 @@
-﻿namespace Portfolio.Models.ViewModels
+﻿using Portfolio.Models.Models;
+
+namespace Portfolio.Models.Models.ViewModels
 {
     public class HomeViewModel
     {

@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Portfolio.Models
+namespace Portfolio.Models.Models
 {
     public class Section
     {
         [Key]
         public int Id { get; set; }
+
+        [Required]
+        public string UrlRef { get; set; }
 
         public string SectionName { get; set; } = "";
         public string SectionDescription { get; set; } = "";

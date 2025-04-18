@@ -1,24 +1,36 @@
 ﻿@using Portfolio.Models.Models.ViewModels
 @model AlbumViewModel
 
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = Model.Album.AlbumName;
+    string PageCover = Model.Album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : Model.Album.CoverPhoto.Path;
+}
+
 <div class="modal fade" id="singlePhotoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog p-4 mb-0 mt-0 modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <img src=@Model.Album.CoverPhoto.Path class="img-fluid" alt="...">
+                <img src=@PageCover class="img-fluid" alt="...">
             </div>
         </div>
     </div>
 </div>
 
-<section class="p-0 text-center container bg-body-primary m-0 mw-100">
-    <div class="row p-0 headerImage" style="background-image: url('@Model.Album.CoverPhoto.Path'); height:32rem;">
+<section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
+    <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@PageCover'); height:32rem;">
         <div class="col-lg-6 col-md-8 m-auto mh-100 overflow-hidden">
             <h1 class="fw-light">@Model.Album.AlbumName</h1>
             <p class="lead text-body-secondary">@Model.Album.AlbumDescription</p>
             <p>
-                <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+                <a href="#" class="btn btn-primary my-2">Wróć</a>
+                <a asp-area="User" asp-controller="Home" asp-action="Contact" class="btn btn-secondary my-2">Skontaktuj się ze mną!</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" asp-route-albumId="@Model.Album.Id" class="btn btn-secondary my-2">Edytuj</a>
+                }
             </p>
         </div>
     </div>

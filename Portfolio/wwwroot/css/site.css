@@ -27,3 +27,9 @@ body {
     background-position-y:25%;
     background-size: cover;
 }
+
+#bd-dash:focus {
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
