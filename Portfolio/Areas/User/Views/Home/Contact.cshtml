@@ -2,14 +2,15 @@
     ViewData["Title"] = "Kontakt";
 }
 
-<section class="p-0 text-center container bg-body-primary m-0 mw-100">
-    <div class="row p-0 headerImage" style="background-image: url('/res/photo/placeholder_hor_0360.jpg'); height:32rem;">
+<section class="p-0 text-center container bg-body-primary m-0 mw-100 m-100">
+    <div class="row p-0 headerImage m-0 mw-100 m-100" style="background-image: url('/res/photo/placeholder_hor_0360.jpg'); height:32rem;">
         
     </div>
 </section>
 
 <div class="container">
     <hr class="featurette-divider" />
+    <partial name="/Views/Shared/_ContactForm.cshtml" />
+    <hr class="featurette-divider" />
 </div>
 
-<partial name="/Views/Shared/_ContactForm.cshtml" />

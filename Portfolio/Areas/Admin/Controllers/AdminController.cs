@@ -126,14 +126,108 @@ namespace Portfolio.Areas.Admin.Controllers
 
             return View(viewModel);
         }
-        #endregion
+
+		[HttpGet]
+		public IActionResult RemoveAlbum(int albumId, string returnRef)
+		{
+            Album album = _db.Album.FirstOrDefault(x => x.Id == albumId);
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            _db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId));
+            _db.SaveChanges();
+
+            _db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == albumId));
+            _db.SaveChanges();
+
+            _db.Album.Remove(album);
+            _db.SaveChanges();
+
+            return RedirectToAction("Section", "Gallery", new { area = "User", section=returnRef });
+        }
+		#endregion
+
+		#region Photos
+		[HttpGet]
+		public IActionResult UpsertPhotos(int albumId)
+        {
+			UpsertPhotosViewModel viewModel = new();
+
+			if (albumId > 0)
+			{
+				viewModel.Album = _db.Album.Include("Photos").FirstOrDefault(x => x.Id == albumId);
+				if (viewModel.Album == null)
+				{
+					return NotFound();
+				}
+			}
+			else
+			{
+                return NotFound();
+			}
+
+            return View(viewModel);
+        }
 
         [HttpGet]
-        #region Photos
-        public IActionResult UpsertPhotos()
-        {
-            return View();
+		public IActionResult RemovePhotoFromAlbum(int photoId, int albumId, string returnRef)
+		{
+            _db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId && x.PhotoId == photoId));
+            _db.SaveChanges();
+
+            return RedirectToAction("Album", "Gallery", new { area = "User", album = returnRef });
         }
+
+        [HttpPost]
+        public IActionResult UpsertPhotos(UpsertPhotosViewModel viewModel)
+        {
+			if (_signInManager.IsSignedIn(User))
+			{
+
+				try
+				{
+					if (ModelState.IsValid)
+					{
+						Album album = viewModel.Album;
+
+						if (viewModel.PhotosUploaded != null && viewModel.PhotosUploaded.Count()>0)
+						{
+							foreach (FormFile file in viewModel.PhotosUploaded)
+							{
+								string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file);
+
+								Photo newPhoto = new Photo()
+								{
+									Width = ImageUtility.ALBUM_COVER_WIDTH,
+									Height = ImageUtility.ALBUM_COVER_HEIGHT,
+									Path = photoPath,
+									IsHidden = false,
+									NSFW = false
+								};
+
+								_db.Photo.Update(newPhoto);
+								_db.SaveChanges();
+								_db.AlbumPhoto.Add(new AlbumPhoto() { AlbumId = album.Id, PhotoId = newPhoto.Id });
+								_db.SaveChanges();
+							}
+						}
+					}
+					else
+					{
+						return NotFound();
+					}
+				}
+				catch (Exception e)
+				{
+					return NotFound();
+				}
+
+				return RedirectToAction("Album", "Gallery", new { area = "User", album = viewModel.Album.UrlRef });
+			}
+			return NotFound();
+		}
         #endregion
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

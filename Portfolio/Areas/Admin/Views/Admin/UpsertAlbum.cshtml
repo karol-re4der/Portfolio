@@ -13,6 +13,7 @@
 	<hr />
 	<form asp-action="UpsertAlbum" id="upsert-album" enctype="multipart/form-data" autocomplete="off">
 		<input hidden asp-for="Album.Id" type="text" class="list-group-item" id="upsert-album-id">
+		<input hidden asp-for="Album.CoverPhotoId" type="text" class="list-group-item" id="upsert-album-cover-photo-id">
 
 		<div class="row">
 			<div class="col-12 col-sm-8">
@@ -64,7 +65,7 @@
 				{
 					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
 				}
-				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-album-cover" onchange="refreshPreview(this.files, document.getElementById('upsert-preview'))" />
+				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-album-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
 			</div>
 		</div>
 		<hr />
@@ -80,7 +81,7 @@
 		</button>
 		@if(Model.Album.Id==0)
 		{
-			<button class="btn btn-outline-primary" type="reset" onclick="setPreview('@ImageUtility.GetPlaceholder(true)', document.getElementById('upsert-preview'))">Wyczyść</button>
+			<button class="btn btn-outline-primary" type="reset" onclick="setPreview('@ImageUtility.GetPlaceholder(true)', 'upsert-preview');">Wyczyść</button>
 		}
 		<hr />
 	</form>

@@ -1,3 +1,42 @@
-﻿<div>
-	<h1>Upsert Photos</h1>
+﻿@model UpsertPhotosViewModel
+
+<div class="container">
+	<hr />
+	<h1>Dodaj zdjęcia do albumu @Model.Album.AlbumName</h1>
+	<hr />
+
+	<form asp-action="UpsertPhotos" id="upsert-photos" enctype="multipart/form-data" autocomplete="off">
+		<div class="row">
+				<input hidden asp-for="Album.Id" type="text" id="upsert-album-id">
+				<input hidden asp-for="Album.UrlRef" type="text" id="upsert-album-ref">
+				<div class="col-12 col-sm-4">
+					<label asp-for="PhotosUploaded" for="upsert-photos-files" class="form-label"></label>
+					<input multiple asp-for="PhotosUploaded" class="form-control" type="file" id="upsert-photos-files" onchange="refreshPreviews(this.files, document.getElementById('previewContainer'), document.getElementById('sampleNode'))" />
+				</div>
+		</div>
+
+		<hr />
+		<div class="album py-0 bg-body-primary">
+			<div class="container">
+				<div id="previewContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" data-masonry="{&quot;percentPosition&quot;: true}">
+					<div id="sampleNode" class="col m-0 p-0">
+						<img src='@ImageUtility.GetPlaceholder(true)' class="img-fluid" alt="...">
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr class="featurette-divider">
+
+		<button class="btn btn-outline-primary" type="submit">Zapisz</button>
+
+		<hr class="featurette-divider">
+
+	</form>
 </div>
+
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/imagePreview.js"></script>
+	<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+}

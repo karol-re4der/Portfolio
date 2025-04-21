@@ -28,3 +28,7 @@ if (modal) {
     })
 }
 window.addEventListener('resize', resizeModal);
+
+$('.requireConfirmation').on('click', function () {
+    return confirm('Na pewno?');
+});
