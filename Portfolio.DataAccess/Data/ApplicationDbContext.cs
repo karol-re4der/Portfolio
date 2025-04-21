@@ -36,5 +36,6 @@ namespace Portfolio.DataAccess.Data
         public DbSet<Section> Section { get; set; }
         public DbSet<AlbumPhoto> AlbumPhoto { get; set; }
         public DbSet<AlbumSection> AlbumSection { get; set; }
+        public DbSet<Review> Review { get; set; }
     }
 }

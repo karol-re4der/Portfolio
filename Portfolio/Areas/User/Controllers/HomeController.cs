@@ -22,6 +22,7 @@ namespace Portfolio.Areas.User.Controllers
         {
             HomeViewModel model = new HomeViewModel();
             model.Sections = _db.Section.Where(x => !x.IsHidden).OrderBy(x => x.Order).Include("SectionCover").ToList();
+            model.Reviews = _db.Review.Include("ReviewPhoto").Take(3).ToList();
 
             return View(model);
         }

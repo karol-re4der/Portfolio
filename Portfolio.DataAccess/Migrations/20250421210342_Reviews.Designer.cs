@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Portfolio.DataAccess.Data;
 namespace Portfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421210342_Reviews")]
+    partial class Reviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,7 +335,7 @@ namespace Portfolio.Migrations
                     b.Property<string>("ReviewAuthor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReviewPhotoId")
+                    b.Property<int>("ReviewPhotoId")
                         .HasColumnType("int");
 
                     b.Property<string>("ReviewText")
@@ -483,7 +486,9 @@ namespace Portfolio.Migrations
                 {
                     b.HasOne("Portfolio.Models.Models.Photo", "ReviewPhoto")
                         .WithMany()
-                        .HasForeignKey("ReviewPhotoId");
+                        .HasForeignKey("ReviewPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ReviewPhoto");
                 });

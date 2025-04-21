@@ -16,9 +16,9 @@
                 <img src="res/photo/placeholder_hor_1145.jpg" class="carousel-image w-100 h-100"/>
                 <div class="container">
                     <div class="carousel-caption text-start">
-                        <h1>Lorem Ipsum</h1>
-                        <p class="opacity-75">Dolor Sit Amet</p>
-                        <p><a class="btn btn-lg btn-primary" href="#">Albumy</a></p>
+                        <h1>Chcesz mnie poznać?</h1>
+                        <p class="opacity-75">Sprawdź co napisali o mnie klienci!</p>
+                        <p><a class="btn btn-lg btn-primary" href="#reviews-section">Recenzje</a></p>
                     </div>
                 </div>
             </div>
@@ -51,6 +51,33 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
+    </div>
+
+    <div class="container" id="reviews-section">
+        <hr class="featurette-divider">
+        <div class="text-center">
+            <h1>Tak o mnie piszą:</h1>
+        </div>
+        <hr class="featurette-divider">
+
+        <div class="row">
+            @if(Model.Reviews!=null && Model.Reviews.Count() > 0)
+            {
+                foreach(Review review in Model.Reviews)
+                {
+                    <figure class="col-lg-4 text-center">
+                        <img src="@review.ReviewPhoto.Path" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
+
+                        <blockquote class="blockquote">
+                            <p class="mb-0">@review.ReviewText</p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer">
+                            <cite title="Source Title">@review.ReviewAuthor</cite>
+                        </figcaption>
+                    </figure>
+                }
+            }
+        </div>
     </div>
 
     <div class="container" id="display-section">
@@ -91,8 +118,9 @@
             }
         }
     </div>
+</div>
 
-    <div class="container">
-        <partial name="/Views/Shared/_ContactForm.cshtml" />
-        <hr class="featurette-divider">
-    </div>
+<div class="container">
+    <partial name="/Views/Shared/_ContactForm.cshtml" />
+    <hr class="featurette-divider">
+</div>
