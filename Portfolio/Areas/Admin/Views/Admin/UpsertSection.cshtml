@@ -1,3 +1,81 @@
-﻿<div>
-	<h1>Upsert Section</h1>
+﻿@model UpsertSectionViewModel
+
+<div class="container">
+	<hr />
+	@if (Model.Section.Id == 0)
+	{
+		<h1>Nowa Sekcja</h1>
+	}
+	else
+	{
+		<h1>Edytuj Sekcję</h1>
+	}
+	<hr />
+	<form asp-action="UpsertSection" id="upsert-section" enctype="multipart/form-data" autocomplete="off">
+		<input hidden asp-for="Section.Id" type="text" class="list-group-item" id="upsert-section-id">
+		<input hidden asp-for="Section.SectionCoverId" type="text" class="list-group-item" id="upsert-section-cover-photo-id">
+
+		<div class="row">
+			<div class="col-12 col-sm-8">
+				<div class=row>
+					<div class="col-12 col-sm-6">
+						<label asp-for="Section.SectionName" for="upsert-section-name" class="form-label"></label>
+						<input asp-for="Section.SectionName" class="form-control" type="text" id="upsert-section-name" oninput="duplicateContent(this, document.getElementById('upsert-section-ref'))" />
+						<span style="display:block;" asp-validation-for="Section.SectionName" class="text-danger mb-3"></span>
+					</div>
+					<div class="col-12 col-sm-6">
+						<label asp-for="Section.UrlRef" for="upsert-section-ref" class="form-label"></label>
+						<div class="input-group">
+							<span class="input-group-text">?section=</span>
+							<input asp-for="Section.UrlRef" class="form-control" type="text" id="upsert-section-ref" />
+						</div>
+						<span style="display:block;" asp-validation-for="Section.UrlRef" class="text-danger mb-3"></span>
+					</div>
+				</div>
+
+				<label asp-for="Section.SectionDescription" for="upsert-section-description" class="form-label"></label>
+				<textarea asp-for="Section.SectionDescription" class="form-control mb-3" id="upsert-section-description" rows="4"></textarea>
+
+				<div class="form-check form-check-inline">
+					<input asp-for="Section.IsHidden" class="form-check-input mb-3" type="checkbox" id="upsert-section-hidden" />
+					<label asp-for="Section.IsHidden" for="upsert-section-hidden" class="form-label"></label>
+				</div>
+			</div>
+			<hr class="d-sm-none mt-3" />
+			<div class="col-12 col-sm-4">
+				<label asp-for="Section.SectionCover" for="upsert-section-cover" class="form-label"></label>
+				@if (Model.Section.SectionCover != null)
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@Model.Section.SectionCover.Path" />
+				}
+				else
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
+				}
+				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-section-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
+			</div>
+		</div>
+		<hr />
+		<button class="btn btn-outline-primary" type="submit">
+			@if (Model.Section.Id == 0)
+			{
+				<div>Stwórz</div>
+			}
+			else
+			{
+				<div>Edytuj</div>
+			}
+		</button>
+		@if (Model.Section.Id == 0)
+		{
+			<button class="btn btn-outline-primary" type="reset" onclick="setPreview('@ImageUtility.GetPlaceholder(true)', 'upsert-preview');">Wyczyść</button>
+		}
+		<hr />
+	</form>
 </div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/imagePreview.js"></script>
+	<script src="~/js/upsertUtility.js"></script>
+}

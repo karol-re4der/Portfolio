@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Portfolio.DataAccess.Data;
 namespace Portfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421220205_Section fields adjustments")]
+    partial class Sectionfieldsadjustments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,7 +362,7 @@ namespace Portfolio.Migrations
                     b.Property<int?>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SectionCoverId")
+                    b.Property<int>("SectionCoverId")
                         .HasColumnType("int");
 
                     b.Property<string>("SectionDescription")
@@ -491,7 +494,9 @@ namespace Portfolio.Migrations
                 {
                     b.HasOne("Portfolio.Models.Models.Photo", "SectionCover")
                         .WithMany()
-                        .HasForeignKey("SectionCoverId");
+                        .HasForeignKey("SectionCoverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("SectionCover");
                 });

@@ -30,18 +30,101 @@ namespace Portfolio.Areas.Admin.Controllers
 
         #region Section
         [HttpGet]
-        public IActionResult UpsertSection()
+        public IActionResult UpsertSection(int sectionId=0)
         {
-            UpsertSectionViewModel viewModel = new UpsertSectionViewModel()
-            {
-                Section = new Section()
-            };
-            return View(viewModel);
-        }
-        #endregion
+			UpsertSectionViewModel viewModel = new UpsertSectionViewModel();
+			Section existingSection;
 
-        #region Album
-        [HttpPost]
+			if (sectionId > 0)
+			{
+				existingSection = _db.Section.Include("SectionCover").FirstOrDefault(x => x.Id == sectionId);
+				if (existingSection == null)
+				{
+					return NotFound();
+				}
+				else
+				{
+					viewModel.Section = existingSection;
+				}
+			}
+			else
+			{
+				viewModel.Section = new Section();
+			}
+
+			return View(viewModel);
+		}
+
+		[HttpPost]
+		public IActionResult UpsertSection(UpsertSectionViewModel viewModel)
+		{
+			if (_signInManager.IsSignedIn(User))
+			{
+
+				try
+				{
+					if (ModelState.IsValid)
+					{
+						Section section = viewModel.Section;
+
+						if (viewModel.PreviewImage != null)
+						{
+							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
+
+							Photo newPhoto = new Photo()
+							{
+								Width = ImageUtility.ALBUM_COVER_WIDTH,
+								Height = ImageUtility.ALBUM_COVER_HEIGHT,
+								Path = photoPath,
+								IsHidden = false,
+								NSFW = false
+							};
+
+							_db.Photo.Update(newPhoto);
+							_db.SaveChanges();
+							section.SectionCoverId = newPhoto.Id;
+
+						}
+
+						_db.Section.Update(section);
+						_db.SaveChanges();
+					}
+					else
+					{
+						return NotFound();
+					}
+				}
+				catch (Exception e)
+				{
+					return NotFound();
+				}
+
+				return RedirectToAction("Section", "Gallery", new { area = "User", section = viewModel.Section.UrlRef });
+			}
+			return NotFound();
+		}
+
+		[HttpGet]
+		public IActionResult RemoveSection(int sectionId)
+		{
+			Section section = _db.Section.FirstOrDefault(x => x.Id == sectionId);
+			if (section == null)
+			{
+				return NotFound();
+			}
+
+			_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.SectionId == sectionId));
+			_db.SaveChanges();
+
+			_db.Section.Remove(section);
+			_db.SaveChanges();
+
+			return RedirectToAction("Index", "Home", new { area = "User"});
+		}
+		#endregion
+
+		#region Album
+		[HttpPost]
         public IActionResult UpsertAlbum(UpsertAlbumViewModel viewModel)
         {
 			if (_signInManager.IsSignedIn(User))

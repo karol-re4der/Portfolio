@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +11,8 @@ namespace Portfolio.Models.Models.ViewModels
     public class UpsertSectionViewModel
     {
         public Section Section { get; set; }
+
+        [ValidateNever]
+        public IFormFile? PreviewImage { get;set;}
     }
 }

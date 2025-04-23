@@ -4,6 +4,10 @@
 @{
     ViewData["Title"] = "Fotokozak";
 }
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 <div class="container p-0 m-0 mw-100">
     <div id="myCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -80,7 +84,7 @@
         </div>
     </div>
 
-    <div class="container" id="display-section">
+    <div class="container p-0" id="display-section">
         <hr class="featurette-divider">
 
         @if(Model.Sections==null || Model.Sections.Count == 0)
@@ -92,26 +96,37 @@
         {
             int i = 0;
             @foreach(Section sect in Model.Sections){
-                <div class="row featurette position-relative">
-                    <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})" class="stretched-link"></a>
-                    @if (i % 2 == 1)
-                    {
-                        <div class="col-md-5">
-                            <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="400" height="500" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false"/>
-                        </div>
-                    }
-                    <div class="col-md-7">
-                        <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
-                        <p class="lead">
-                            @sect.SectionDescription
-                        </p>
+                string CoverPath = sect.SectionCover == null ? ImageUtility.GetPlaceholder(true) : sect.SectionCover.Path;
+
+                <div class="row mx-0 position-relative text-center text-md-@(i%2==1?"start":"end")">
+                    <div class="col-md-7 order-1 order-md-@(i%2) mt-4 mt-md-0">
+                        <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
+                            <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
+                            <p class="lead">
+                                @sect.SectionDescription
+                            </p>
+                        </a>
                     </div>
-                    @if (i % 2 == 0)
-                    {
-                        <div class="col-md-5">
-                            <img src="@sect.SectionCover.Path" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
-                        </div>
-                    }
+                    <div class="col-md-5 px-0 order-0 hasOverlay">
+                        <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
+                            <img src="@CoverPath" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
+                        </a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="position-absolute @(i%2==1?"start":"end")-0 top-0 h-100 bg-black overlay">
+                                <div class="btn-group-vertical h-100 m-100 align-items-center">
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection" asp-route-sectionId="@sect.Id" class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveSection" asp-route-sectionId="@sect.Id" asp-route-returnRef="@sect.UrlRef" class="btn btn-outline-primary requireConfirmation">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
                 <hr class="featurette-divider">
                 i++;

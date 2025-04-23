@@ -5,10 +5,11 @@
 
 @{
     ViewData["Title"] = Model.Section.SectionName;
+    string PageCover = Model.Section.SectionCover == null ? ImageUtility.GetPlaceholder(true) : Model.Section.SectionCover.Path;
 }
 
 <section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
-    <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@Model.Section.SectionCover.Path'); height:32rem;">
+    <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@PageCover'); height:32rem;">
         <div class="col-lg-6 col-md-8 m-auto mh-100 overflow-hidden">
             <h1 class="fw-light">@Model.Section.SectionName</h1>
             <p class="lead text-body-secondary overflow-hidden">@Model.Section.SectionDescription</p>
@@ -35,49 +36,49 @@
             else
             {
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
-                @foreach(Album album in Model.Section.Albums)
-                {
-                    <div class="col">
-                        <div>
-                            <div class="card shadow-sm hasOverlay">
-                                <a href="@Url.Action("Album", "Gallery", new {album=album.UrlRef})">
-                                    <div class="ratio" style="--bs-aspect-ratio: 125%;">
-                                        @{
-                                            string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : album.CoverPhoto.Path;
-                                        }
-                                        <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@Cover" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
-                                    </div>
+                    @foreach(Album album in Model.Section.Albums)
+                    {
+                        <div class="col">
+                            <div>
+                                <div class="card shadow-sm hasOverlay">
+                                    <a href="@Url.Action("Album", "Gallery", new {album=album.UrlRef})">
+                                        <div class="ratio" style="--bs-aspect-ratio: 125%;">
+                                            @{
+                                                string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : album.CoverPhoto.Path;
+                                            }
+                                            <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@Cover" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
+                                        </div>
 
-                                    <div class="card-body d-flex">
-                                        <strong class="card-text me-auto">
-                                            @album.AlbumName
-                                        </strong>
-                                        <small class="text-body-secondary">
-                                            @album.AlbumDateTime.ToString("MMM yyyy")
-                                        </small>
-                                    </div>
-                                </a>
+                                        <div class="card-body d-flex">
+                                            <strong class="card-text me-auto">
+                                                @album.AlbumName
+                                            </strong>
+                                            <small class="text-body-secondary">
+                                                @album.AlbumDateTime.ToString("MMM yyyy")
+                                            </small>
+                                        </div>
+                                    </a>
 
-                            @if (SignInManager.IsSignedIn(User))
-                            {
-                                <div class="position-absolute w-100 top-0 bg-black overlay">
-                                    <div class="btn-group w-100 m-100">
-                                        <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" asp-route-albumId="@album.Id" class="btn btn-outline-primary">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhotos" asp-route-albumId="@album.Id" asp-route-returnRef="@Model.Section.UrlRef" class="btn btn-outline-primary">
-                                            <i class="bi bi-plus-square"></i>
-                                        </a>
-                                        <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveAlbum" asp-route-albumId="@album.Id" asp-route-returnRef="@Model.Section.UrlRef" class="btn btn-outline-primary requireConfirmation">
-                                            <i class="bi bi-trash3-fill"></i>
-                                        </a>
-                                    </div>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <div class="position-absolute w-100 top-0 bg-black overlay">
+                                            <div class="btn-group w-100 m-100">
+                                                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" asp-route-albumId="@album.Id" class="btn btn-outline-primary">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhotos" asp-route-albumId="@album.Id" asp-route-returnRef="@Model.Section.UrlRef" class="btn btn-outline-primary">
+                                                    <i class="bi bi-plus-square"></i>
+                                                </a>
+                                                <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveAlbum" asp-route-albumId="@album.Id" asp-route-returnRef="@Model.Section.UrlRef" class="btn btn-outline-primary requireConfirmation">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            }
                             </div>
                         </div>
-                    </div>
-                }
+                    }
                 </div>
             }
 
