@@ -9,6 +9,7 @@ using Portfolio.Models.Models;
 using Portfolio.Models.Models.ViewModels;
 using Portfolio.Utility.Utility.Image;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace Portfolio.Areas.Admin.Controllers
 {
@@ -60,7 +61,6 @@ namespace Portfolio.Areas.Admin.Controllers
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-
 				try
 				{
 					if (ModelState.IsValid)
@@ -71,10 +71,17 @@ namespace Portfolio.Areas.Admin.Controllers
 						{
 							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
-							Photo newPhoto = new Photo()
+                            int x, y = 0;
+                            using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
+                            {
+                                x = image.Width;
+                                y = image.Height;
+                            };
+
+                            Photo newPhoto = new Photo()
 							{
-								Width = ImageUtility.ALBUM_COVER_WIDTH,
-								Height = ImageUtility.ALBUM_COVER_HEIGHT,
+								Width = x,
+								Height = y,
 								Path = photoPath,
 								IsHidden = false,
 								NSFW = false
@@ -107,19 +114,26 @@ namespace Portfolio.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult RemoveSection(int sectionId)
 		{
-			Section section = _db.Section.FirstOrDefault(x => x.Id == sectionId);
-			if (section == null)
+			if (_signInManager.IsSignedIn(User))
+			{
+				Section section = _db.Section.FirstOrDefault(x => x.Id == sectionId);
+				if (section == null)
+				{
+					return NotFound();
+				}
+
+				_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.SectionId == sectionId));
+				_db.SaveChanges();
+
+				_db.Section.Remove(section);
+				_db.SaveChanges();
+
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+            else
 			{
 				return NotFound();
 			}
-
-			_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.SectionId == sectionId));
-			_db.SaveChanges();
-
-			_db.Section.Remove(section);
-			_db.SaveChanges();
-
-			return RedirectToAction("Index", "Home", new { area = "User"});
 		}
 		#endregion
 
@@ -140,10 +154,17 @@ namespace Portfolio.Areas.Admin.Controllers
                         {
 							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
-							Photo newPhoto = new Photo()
+                            int x, y = 0;
+                            using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
                             {
-                                Width = ImageUtility.ALBUM_COVER_WIDTH,
-                                Height = ImageUtility.ALBUM_COVER_HEIGHT,
+                                x = image.Width;
+                                y = image.Height;
+                            };
+
+                            Photo newPhoto = new Photo()
+                            {
+                                Width = x,
+                                Height = y,
                                 Path = photoPath,
                                 IsHidden = false,
                                 NSFW = false
@@ -213,22 +234,26 @@ namespace Portfolio.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult RemoveAlbum(int albumId, string returnRef)
 		{
-            Album album = _db.Album.FirstOrDefault(x => x.Id == albumId);
-            if (album == null)
-            {
-                return NotFound();
+			if (_signInManager.IsSignedIn(User))
+			{
+				Album album = _db.Album.FirstOrDefault(x => x.Id == albumId);
+				if (album == null)
+				{
+					return NotFound();
+				}
+
+				_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId));
+				_db.SaveChanges();
+
+				_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == albumId));
+				_db.SaveChanges();
+
+				_db.Album.Remove(album);
+				_db.SaveChanges();
+
+                return RedirectToAction("Section", "Gallery", new { area = "User", section = returnRef });
             }
-
-            _db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId));
-            _db.SaveChanges();
-
-            _db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == albumId));
-            _db.SaveChanges();
-
-            _db.Album.Remove(album);
-            _db.SaveChanges();
-
-            return RedirectToAction("Section", "Gallery", new { area = "User", section=returnRef });
+			return NotFound();
         }
 		#endregion
 
@@ -257,10 +282,14 @@ namespace Portfolio.Areas.Admin.Controllers
         [HttpGet]
 		public IActionResult RemovePhotoFromAlbum(int photoId, int albumId, string returnRef)
 		{
-            _db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId && x.PhotoId == photoId));
-            _db.SaveChanges();
+			if (_signInManager.IsSignedIn(User))
+			{
+				_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId && x.PhotoId == photoId));
+				_db.SaveChanges();
 
-            return RedirectToAction("Album", "Gallery", new { area = "User", album = returnRef });
+				return RedirectToAction("Album", "Gallery", new { area = "User", album = returnRef });
+			}
+			return NotFound();
         }
 
         [HttpPost]
@@ -281,10 +310,17 @@ namespace Portfolio.Areas.Admin.Controllers
 							{
 								string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file);
 
-								Photo newPhoto = new Photo()
+								int x, y = 0;
+                                using (var image = Image.FromStream(file.OpenReadStream()))
+                                {
+									x = image.Width;
+									y = image.Height;
+                                };
+
+                                Photo newPhoto = new Photo()
 								{
-									Width = ImageUtility.ALBUM_COVER_WIDTH,
-									Height = ImageUtility.ALBUM_COVER_HEIGHT,
+									Width = x,
+									Height = y,
 									Path = photoPath,
 									IsHidden = false,
 									NSFW = false
