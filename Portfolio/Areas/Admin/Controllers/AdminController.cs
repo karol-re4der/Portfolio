@@ -201,7 +201,7 @@ namespace Portfolio.Areas.Admin.Controllers
 		}
 
 		[HttpGet]
-        public IActionResult UpsertAlbum(int albumId = 0)
+		public IActionResult UpsertAlbum(int albumId = 0, int targetSectionId = 0)
         {
             UpsertAlbumViewModel viewModel = new UpsertAlbumViewModel();
             Album existingAlbum;
@@ -219,13 +219,15 @@ namespace Portfolio.Areas.Admin.Controllers
 
                     viewModel.Album = existingAlbum;
                     viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = sectionIdSelected.Contains(x.Id) }).ToList();
+					viewModel.SectionIdSelected = sectionIdSelected;
                 }
             }
             else
             {
                 viewModel.Album = new Album();
                 viewModel.Album.AlbumDateTime = DateTime.Now;
-                viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = false }).ToList();
+                viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = x.Id==targetSectionId }).ToList();
+				viewModel.SectionIdSelected.Add(targetSectionId);
             }
 
             return View(viewModel);

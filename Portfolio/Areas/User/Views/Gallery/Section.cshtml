@@ -29,13 +29,34 @@
     <div class="container">
         <hr class="featurette-divider">
 
-            @if(Model.Section==null || Model.Section.Albums==null || Model.Section.Albums.Count()==0)
-            {
-                <partial name="/Views/Shared/_NoContent.cshtml" />
-            }
-            else
-            {
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+        @if(Model.Section==null || Model.Section.Albums==null || Model.Section.Albums.Count()==0)
+        {
+            <partial name="/Views/Shared/_NoContent.cshtml" />
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="col">
+                        <div>
+                            <div class="card shadow-sm hasOverlay">
+                                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" asp-route-targetSectionId="@Model.Section.Id">
+                                    <div class="ratio" style="--bs-aspect-ratio: 125%;">
+                                        <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@ImageUtility.GetPlaceholder(true)" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
+                                    </div>
+
+                                    <div class="card-body d-flex">
+                                        <strong class="card-text me-auto">
+                                            --DODAJ ALBUM--
+                                        </strong>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
                     @foreach(Album album in Model.Section.Albums)
                     {
                         <div class="col">

@@ -113,6 +113,23 @@
         else
         {
             int i = 0;
+            if (SignInManager.IsSignedIn(User))
+            {
+                <div class="row mx-0 position-relative text-center text-md-@(i%2==1?"start":"end")">
+                    <div class="col-md-7 order-1 order-md-@(i%2) mt-4 mt-md-0">
+                        <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection">
+                            <h2 class="featurette-heading fw-normal lh-1">--DODAJ SEKCJĘ--</h2>
+                        </a>
+                    </div>
+                    <div class="col-md-5 px-0 order-0 hasOverlay">
+                        <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection">
+                            <img src="@ImageUtility.GetPlaceholder(true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="@ImageUtility.SECTION_COVER_WIDTH" height="@ImageUtility.SECTION_COVER_HEIGHT" />
+                        </a>
+                    </div>
+                </div>
+                <hr class="featurette-divider">
+                i++;
+            }
             @foreach(Section sect in Model.Sections){
                 <div class="row mx-0 position-relative text-center text-md-@(i%2==1?"start":"end")">
                     <div class="col-md-7 order-1 order-md-@(i%2) mt-4 mt-md-0">
