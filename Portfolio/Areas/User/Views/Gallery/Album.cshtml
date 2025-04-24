@@ -22,10 +22,10 @@
 <section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
     <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@PageCover'); height:32rem;">
         <div class="col-lg-6 col-md-8 m-auto mh-100 overflow-hidden">
-            <h1 class="fw-light">@Model.Album.AlbumName</h1>
-            <p class="lead text-body-secondary">@Model.Album.AlbumDescription</p>
+            <h1 class="fw-light text-light">@Model.Album.AlbumName</h1>
+            <p class="lead text-light">@Model.Album.AlbumDescription</p>
             <p>
-                <a href="#" class="btn btn-primary my-2">Wróć</a>
+                <a asp-area="User" asp-controller="Home" asp-action="Index" class="btn btn-primary my-2">Wróć</a>
                 <a asp-area="User" asp-controller="Home" asp-action="Contact" class="btn btn-secondary my-2">Skontaktuj się ze mną!</a>
                 @if (SignInManager.IsSignedIn(User))
                 {
