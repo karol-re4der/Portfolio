@@ -23,10 +23,17 @@ namespace Portfolio.Areas.User.Controllers
 
         public IActionResult Section(string section)
         {
+            if (string.IsNullOrWhiteSpace(section))
+            {
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+
             SectionViewModel viewModel = new SectionViewModel
             {
                 Section = _db.Section.Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
+
+            viewModel.Section.Albums = viewModel.Section.Albums.OrderBy(x => x.AlbumDateTime).ToList();
 
             if (viewModel.Section == null)
             {
@@ -40,12 +47,14 @@ namespace Portfolio.Areas.User.Controllers
                 return View(viewModel);
         }
 
-        public IActionResult Album(string album)
+        public IActionResult Album(string album, string returnRef = "")
         {
             AlbumViewModel viewModel = new AlbumViewModel
             {
                 Album = _db.Album.Include("CoverPhoto").Include("Photos").FirstOrDefault(x => x.UrlRef.Equals(album))
             };
+
+            viewModel.ReturnRef = returnRef;
 
             if (viewModel.Album == null)
             {

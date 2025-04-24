@@ -41,7 +41,7 @@
                         <div class="col">
                             <div>
                                 <div class="card shadow-sm hasOverlay">
-                                    <a href="@Url.Action("Album", "Gallery", new {album=album.UrlRef})">
+                                    <a href="@Url.Action("Album", "Gallery", new {album=album.UrlRef, returnRef=Model.Section.UrlRef})">
                                         <div class="ratio" style="--bs-aspect-ratio: 125%;">
                                             @{
                                                 string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : album.CoverPhoto.Path;

@@ -73,7 +73,7 @@
                 {
                     PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : review.ReviewPhoto.Path;
                     <figure class="col-lg-4 text-center position-relative hasOverlay">
-                        <img src="@PhotoPath" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
+                        <img class="object-fit-cover rounded-circle" src="@PhotoPath" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
 
                         <blockquote class="blockquote">
                             <p class="mb-0">@review.ReviewText</p>
