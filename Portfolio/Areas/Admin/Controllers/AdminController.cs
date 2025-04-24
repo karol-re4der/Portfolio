@@ -347,9 +347,112 @@ namespace Portfolio.Areas.Admin.Controllers
 			}
 			return NotFound();
 		}
-        #endregion
+		#endregion
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		#region Review
+		[HttpPost]
+		public IActionResult UpsertReview(UpsertReviewViewModel viewModel)
+		{
+			if (_signInManager.IsSignedIn(User))
+			{
+
+				try
+				{
+					if (ModelState.IsValid)
+					{
+						Review review = viewModel.Review;
+
+						if (viewModel.PreviewImage != null)
+						{
+							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
+
+							int x, y = 0;
+							using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
+							{
+								x = image.Width;
+								y = image.Height;
+							};
+
+							Photo newPhoto = new Photo()
+							{
+								Width = x,
+								Height = y,
+								Path = photoPath,
+								IsHidden = false,
+								NSFW = false
+							};
+
+							_db.Photo.Update(newPhoto);
+							_db.SaveChanges();
+							review.ReviewPhotoId = newPhoto.Id;
+
+						}
+
+						_db.Review.Update(review);
+						_db.SaveChanges();
+					}
+					else
+					{
+						return NotFound();
+					}
+				}
+				catch (Exception e)
+				{
+					return NotFound();
+				}
+
+				return RedirectToAction("Index", "Home", new { area = "User"});
+			}
+			return NotFound();
+		}
+
+		[HttpGet]
+		public IActionResult UpsertReview(int reviewId = 0)
+		{
+			UpsertReviewViewModel viewModel = new UpsertReviewViewModel();
+			Review existingReview;
+
+			if (reviewId > 0)
+			{
+				existingReview = _db.Review.Include("ReviewPhoto").FirstOrDefault(x => x.Id == reviewId);
+				if (existingReview == null)
+				{
+					return NotFound();
+				}
+				else
+				{
+					viewModel.Review = existingReview;
+				}
+			}
+			else
+			{
+				viewModel.Review = new Review();
+			}
+
+			return View(viewModel);
+		}
+
+		[HttpGet]
+		public IActionResult RemoveReview(int reviewId)
+		{
+			if (_signInManager.IsSignedIn(User))
+			{
+				Review review = _db.Review.FirstOrDefault(x => x.Id == reviewId);
+				if (review == null)
+				{
+					return NotFound();
+				}
+
+				_db.Review.Remove(review);
+				_db.SaveChanges();
+
+				return RedirectToAction("Index", "Home", new { area = "User"});
+			}
+			return NotFound();
+		}
+		#endregion
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

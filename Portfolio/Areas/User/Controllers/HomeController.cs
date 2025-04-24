@@ -21,8 +21,9 @@ namespace Portfolio.Areas.User.Controllers
         public IActionResult Index()
         {
             HomeViewModel model = new HomeViewModel();
+            Random rand = new Random();
             model.Sections = _db.Section.Where(x => !x.IsHidden).OrderBy(x => x.Order).Include("SectionCover").ToList();
-            model.Reviews = _db.Review.Include("ReviewPhoto").Take(3).ToList();
+            model.Reviews = _db.Review.Include("ReviewPhoto").ToList().OrderBy(x=> rand.NextDouble()).Take(3).ToList();
 
             return View(model);
         }

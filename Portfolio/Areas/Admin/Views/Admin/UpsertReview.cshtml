@@ -1,0 +1,66 @@
+﻿@model UpsertReviewViewModel
+
+<div class="container">
+	<hr />
+	@if (Model.Review.Id == 0)
+	{
+		<h1>Nowa Recenzja</h1>
+	}
+	else
+	{
+		<h1>Edytuj Recenzję</h1>
+	}
+	<hr />
+	<form asp-action="UpsertReview" id="upsert-review" enctype="multipart/form-data" autocomplete="off">
+		<input hidden asp-for="Review.Id" type="text" class="list-group-item" id="upsert-review-id">
+		<input hidden asp-for="Review.ReviewPhoto" type="text" class="list-group-item" id="upsert-review-cover-photo-id">
+
+		<div class="row">
+			<div class="col-12 col-sm-8">
+				<div class="col-12 col-sm-4">
+					<label asp-for="Review.ReviewAuthor" for="upsert-review-name" class="form-label"></label>
+					<input asp-for="Review.ReviewAuthor" class="form-control" type="text" id="upsert-review-name"/>
+					<span style="display:block;" asp-validation-for="Review.ReviewAuthor" class="text-danger mb-3"></span>
+				</div>
+
+				<label asp-for="Review.ReviewText" for="upsert-review-description" class="form-label"></label>
+				<textarea asp-for="Review.ReviewText" class="form-control mb-3" id="upsert-review-description" rows="4"></textarea>
+			</div>
+			<hr class="d-sm-none mt-3" />
+			<div class="col-12 col-sm-4">
+				<label asp-for="Review.ReviewPhoto" for="upsert-review-cover" class="form-label"></label>
+				@if (Model.Review.ReviewPhoto != null)
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@Model.Review.ReviewPhoto.Path" />
+				}
+				else
+				{
+					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
+				}
+				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-review-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
+			</div>
+		</div>
+		<hr />
+		<button class="btn btn-outline-primary" type="submit">
+			@if (Model.Review.Id == 0)
+			{
+				<div>Stwórz</div>
+			}
+			else
+			{
+				<div>Edytuj</div>
+			}
+		</button>
+		@if (Model.Review.Id == 0)
+		{
+			<button class="btn btn-outline-primary" type="reset" onclick="setPreview('@ImageUtility.GetPlaceholder(true)', 'upsert-preview');">Wyczyść</button>
+		}
+		<hr />
+	</form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/imagePreview.js"></script>
+	<script src="~/js/upsertUtility.js"></script>
+}
