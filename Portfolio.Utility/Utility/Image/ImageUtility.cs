@@ -7,12 +7,14 @@ namespace Portfolio.Utility.Utility.Image
     {
         public const string PATH_PHOTOS = "/res/photo/";
 		public const string PATH_PLACEHOLDERS = "/res/photo/placeholder/";
-		public const int ALBUM_COVER_WIDTH = 1080;
-		public const int ALBUM_COVER_HEIGHT = 1350;
+		public const int ALBUM_COVER_WIDTH = 400;
+		public const int ALBUM_COVER_HEIGHT = 500;
+        public const int SECTION_COVER_WIDTH = 400;
+        public const int SECTION_COVER_HEIGHT = 500;
+        public const int REVIEW_COVER_WIDTH = 140;
+        public const int REVIEW_COVER_HEIGHT = 140;
 
-
-
-		public static string GetPlaceholder(bool vertical)
+        public static string GetPlaceholder(bool vertical)
         {
             return PATH_PLACEHOLDERS + "placeholder_" + (vertical ? "vertical" : "horizontal") + ".jpg";
         }
@@ -33,6 +35,11 @@ namespace Portfolio.Utility.Utility.Image
 			}
 
 			return newPath;
+		}
+
+		public static string PathOrPlaceholder(string path, bool vertical)
+		{
+			return string.IsNullOrWhiteSpace(path) ? GetPlaceholder(vertical) : path;
 		}
     }
 }

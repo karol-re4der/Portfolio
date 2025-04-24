@@ -73,7 +73,7 @@
                 {
                     PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : review.ReviewPhoto.Path;
                     <figure class="col-lg-4 text-center position-relative hasOverlay">
-                        <img class="object-fit-cover rounded-circle" src="@PhotoPath" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
+                        <img class="object-fit-cover rounded-circle" src="@PhotoPath" width="@ImageUtility.REVIEW_COVER_WIDTH" height="@ImageUtility.REVIEW_COVER_HEIGHT" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
 
                         <blockquote class="blockquote">
                             <p class="mb-0">@review.ReviewText</p>
@@ -114,8 +114,6 @@
         {
             int i = 0;
             @foreach(Section sect in Model.Sections){
-                string CoverPath = sect.SectionCover == null ? ImageUtility.GetPlaceholder(true) : sect.SectionCover.Path;
-
                 <div class="row mx-0 position-relative text-center text-md-@(i%2==1?"start":"end")">
                     <div class="col-md-7 order-1 order-md-@(i%2) mt-4 mt-md-0">
                         <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
@@ -127,7 +125,7 @@
                     </div>
                     <div class="col-md-5 px-0 order-0 hasOverlay">
                         <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <img src="@CoverPath" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="400" height="500" />
+                            <img src="@ImageUtility.PathOrPlaceholder(sect?.SectionCover?.Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="@ImageUtility.SECTION_COVER_WIDTH" height="@ImageUtility.SECTION_COVER_HEIGHT" />
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -137,9 +135,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveSection" asp-route-sectionId="@sect.Id" asp-route-returnRef="@sect.UrlRef" class="btn btn-outline-primary requireConfirmation">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                                        </svg>
+                                        <i class="bi bi-trash3-fill"></i>
                                     </a>
                                 </div>
                             </div>

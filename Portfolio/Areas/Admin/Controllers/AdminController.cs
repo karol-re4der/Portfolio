@@ -195,7 +195,7 @@ namespace Portfolio.Areas.Admin.Controllers
 					return NotFound();
 				}
 
-				return RedirectToAction("Album", "Gallery", new { area="User", album = viewModel.Album.UrlRef });
+				return RedirectToAction("Album", "Gallery", new { area="User", album = viewModel.Album.UrlRef, returnRef = "" });
 			}
 			return NotFound();
 		}

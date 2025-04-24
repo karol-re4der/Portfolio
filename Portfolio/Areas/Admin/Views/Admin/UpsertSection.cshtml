@@ -44,15 +44,9 @@
 			<hr class="d-sm-none mt-3" />
 			<div class="col-12 col-sm-4">
 				<label asp-for="Section.SectionCover" for="upsert-section-cover" class="form-label"></label>
-				@if (Model.Section.SectionCover != null)
-				{
-					<img id="upsert-preview" class="img-thumbnail mb-3" src="@Model.Section.SectionCover.Path" />
-				}
-				else
-				{
-					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
-				}
+				<img id="upsert-preview" class="object-fit-cover border border-1 rounded-1 p-1 mb-3 mw-100" style="aspect-ratio: @((float)@ImageUtility.SECTION_COVER_WIDTH/ImageUtility.SECTION_COVER_HEIGHT);" src="@ImageUtility.PathOrPlaceholder(Model.Section?.SectionCover?.Path, true)" />
 				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-section-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
+				<span class="text-secondary">Target size: @ImageUtility.SECTION_COVER_WIDTH x @ImageUtility.SECTION_COVER_HEIGHT</span>
 			</div>
 		</div>
 		<hr />

@@ -14,7 +14,7 @@
 	<form asp-action="UpsertReview" id="upsert-review" enctype="multipart/form-data" autocomplete="off">
 		<input hidden asp-for="Review.Id" type="text" class="list-group-item" id="upsert-review-id">
 		<input hidden asp-for="Review.ReviewPhoto" type="text" class="list-group-item" id="upsert-review-cover-photo-id">
-
+		
 		<div class="row">
 			<div class="col-12 col-sm-8">
 				<div class="col-12 col-sm-4">
@@ -29,15 +29,9 @@
 			<hr class="d-sm-none mt-3" />
 			<div class="col-12 col-sm-4">
 				<label asp-for="Review.ReviewPhoto" for="upsert-review-cover" class="form-label"></label>
-				@if (Model.Review.ReviewPhoto != null)
-				{
-					<img id="upsert-preview" class="img-thumbnail mb-3" src="@Model.Review.ReviewPhoto.Path" />
-				}
-				else
-				{
-					<img id="upsert-preview" class="img-thumbnail mb-3" src="@ImageUtility.GetPlaceholder(true)" />
-				}
+				<img id="upsert-preview" class="mb-3 d-block object-fit-cover border border-1 p-1 rounded-circle mx-auto mw-100" style="aspect-ratio: @((float)ImageUtility.REVIEW_COVER_WIDTH/ImageUtility.REVIEW_COVER_HEIGHT);" src="@ImageUtility.PathOrPlaceholder(@Model.Review?.ReviewPhoto?.Path, true)" />
 				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-review-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
+				<span class="text-secondary">Target size: @ImageUtility.REVIEW_COVER_WIDTH x @ImageUtility.REVIEW_COVER_HEIGHT</span>
 			</div>
 		</div>
 		<hr />
