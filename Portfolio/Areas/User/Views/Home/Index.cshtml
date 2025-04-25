@@ -141,8 +141,8 @@
                         </a>
                     </div>
                     <div class="col-md-5 px-0 order-0 hasOverlay">
-                        <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <img src="@ImageUtility.PathOrPlaceholder(sect?.SectionCover?.Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto" role="img" aria-label="Section Cover" preserveAspectRatio="xMidYMid slice" focusable="false" width="@ImageUtility.SECTION_COVER_WIDTH" height="@ImageUtility.SECTION_COVER_HEIGHT" />
+                        <a class="w-100 h-100" href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
+                            <img src="@ImageUtility.PathOrPlaceholder(sect?.SectionCover?.Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto w-100" role="img" aria-label="Section Cover" focusable="false" style="max-width:@(ImageUtility.SECTION_COVER_WIDTH)px" />
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {

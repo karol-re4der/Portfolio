@@ -33,7 +33,7 @@ namespace Portfolio.Areas.User.Controllers
                 Section = _db.Section.Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
 
-            viewModel.Section.Albums = viewModel.Section.Albums.OrderBy(x => x.AlbumDateTime).ToList();
+            viewModel.Section.Albums = viewModel.Section.Albums.OrderByDescending(x => x.AlbumDateTime).ToList();
 
             if (viewModel.Section == null)
             {
