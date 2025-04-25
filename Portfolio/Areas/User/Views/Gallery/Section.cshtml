@@ -18,7 +18,7 @@
                 <a asp-area="User" asp-controller="Home" asp-action="Contact" class="btn btn-secondary my-2">Skontaktuj się ze mną!</a>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection" asp-route-albumId="@Model.Section.Id" class="btn btn-secondary my-2">Edytuj</a>
+                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection" asp-route-sectionId="@Model.Section.Id" class="btn btn-secondary my-2">Edytuj</a>
                 }
             </p>
         </div>
