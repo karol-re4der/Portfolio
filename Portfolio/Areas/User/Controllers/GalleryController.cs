@@ -30,10 +30,10 @@ namespace Portfolio.Areas.User.Controllers
 
             SectionViewModel viewModel = new SectionViewModel
             {
-                Section = _db.Section.Where(x=>!x.IsHidden).Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.UrlRef.Equals(section))
+                Section = _db.Section.Include("SectionCover").Include("Albums").Include("Albums.CoverPhoto").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
 
-            viewModel.Section.Albums = viewModel.Section.Albums.OrderByDescending(x => x.AlbumDateTime).ToList();
+            viewModel.Section.Albums = viewModel.Section.Albums.Where(x=>!x.IsHidden).OrderByDescending(x => x.AlbumDateTime).ToList();
 
             if (viewModel.Section == null)
             {
