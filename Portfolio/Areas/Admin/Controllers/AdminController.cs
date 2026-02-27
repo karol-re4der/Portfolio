@@ -10,6 +10,7 @@ using Portfolio.Models.Models.ViewModels;
 using Portfolio.Utility.Utility.Image;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Portfolio.Areas.Admin.Controllers
 {
@@ -297,43 +298,75 @@ namespace Portfolio.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpsertPhotos(UpsertPhotosViewModel viewModel)
         {
-			if (_signInManager.IsSignedIn(User))
+            if (_signInManager.IsSignedIn(User))
 			{
-
 				try
 				{
 					if (ModelState.IsValid)
 					{
 						Album album = viewModel.Album;
+						List<ResolutionConfig> resolutions = _db.ResolutionConfig.Where(x => 1 == 1).ToList();
 
 						if (viewModel.PhotosUploaded != null && viewModel.PhotosUploaded.Count()>0)
 						{
 							foreach (FormFile file in viewModel.PhotosUploaded)
 							{
-								string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file);
+								//Original photo
+								int originalId = 0;
+								double originalAspect = 1;
+                                string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file);
 
-								int x, y = 0;
+								int originalX, originalY = 0;
                                 using (var image = Image.FromStream(file.OpenReadStream()))
                                 {
-									x = image.Width;
-									y = image.Height;
+                                    originalX = image.Width;
+                                    originalY = image.Height;
                                 };
+								originalAspect = (double)originalX / originalY;
 
                                 Photo newPhoto = new Photo()
 								{
-									Width = x,
-									Height = y,
+									Width = originalX,
+									Height = originalY,
 									Path = photoPath,
 									IsHidden = false,
 									NSFW = false
 								};
 
-								_db.Photo.Update(newPhoto);
+                                _db.Photo.Update(newPhoto);
 								_db.SaveChanges();
-								_db.AlbumPhoto.Add(new AlbumPhoto() { AlbumId = album.Id, PhotoId = newPhoto.Id });
+                                originalId = newPhoto.Id;
+                                _db.AlbumPhoto.Add(new AlbumPhoto() { AlbumId = album.Id, PhotoId = newPhoto.Id });
 								_db.SaveChanges();
-							}
-						}
+
+                                //Resized versions
+                                double aspect = 1;
+
+                                foreach (ResolutionConfig res in resolutions)
+								{
+									aspect = (double) res.Width / res.Height;
+                                    if (originalAspect < 1 && aspect >= 1) continue; //no rotating
+                                    if (originalAspect > 1 && aspect <= 1) continue; //no rotating
+									if (res.Width > originalX || res.Height > originalY) continue; //no upsizing
+
+
+                                    photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file, res.Width, res.Height);
+
+                                    newPhoto = new Photo()
+									{
+										Width = res.Width,
+										Height = res.Height,
+										Path = photoPath,
+										IsHidden = false,
+										NSFW = false,
+										OriginalPhotoId = originalId
+									};
+
+									_db.Photo.Update(newPhoto);
+									_db.SaveChanges();
+								}
+                            }
+                        }
 					}
 					else
 					{

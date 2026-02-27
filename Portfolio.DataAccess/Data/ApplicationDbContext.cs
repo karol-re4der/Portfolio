@@ -29,6 +29,11 @@ namespace Portfolio.DataAccess.Data
                 .HasOne(e => e.CoverPhoto)
                 .WithMany(e => e.AlbumCovers)
                 .HasForeignKey(e => e.CoverPhotoId);
+
+            modelBuilder.Entity<Photo>()
+                .HasOne(e => e.OriginalPhoto)
+                .WithMany(e => e.DerivedPhotos)
+                .HasForeignKey(e => e.OriginalPhotoId);
         }
 
         public DbSet<Photo> Photo { get; set; }
@@ -37,5 +42,7 @@ namespace Portfolio.DataAccess.Data
         public DbSet<AlbumPhoto> AlbumPhoto { get; set; }
         public DbSet<AlbumSection> AlbumSection { get; set; }
         public DbSet<Review> Review { get; set; }
+        public DbSet<ResolutionConfig> ResolutionConfig { get; set; }
+
     }
 }

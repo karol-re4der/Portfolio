@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Portfolio.Models.Models
 {
@@ -17,5 +18,10 @@ namespace Portfolio.Models.Models
         public List<AlbumPhoto> AlbumsPhotos { get; set; }
 
         public List<Album> AlbumCovers { get; set; }
+
+        public int? OriginalPhotoId { get; set; }
+        public Photo OriginalPhoto { get; set; }
+        public List<Photo> DerivedPhotos { get; set; }
+
     }
 }

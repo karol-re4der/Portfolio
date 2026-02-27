@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Portfolio.Utility.Utility.Image
 {
@@ -19,7 +21,7 @@ namespace Portfolio.Utility.Utility.Image
             return PATH_PLACEHOLDERS + "placeholder_" + (vertical ? "vertical" : "horizontal") + ".jpg";
         }
 
-        public static string AddNewPhotoFile(IWebHostEnvironment env, IFormFile? image)
+        public static string AddNewPhotoFile(IWebHostEnvironment env, IFormFile? image, int targetWidth = 0, int targetHeight = 0)
         {
 			if (image == null) return "";
 			if (string.IsNullOrWhiteSpace(image.FileName)) return "";
@@ -31,8 +33,17 @@ namespace Portfolio.Utility.Utility.Image
 
 			using (var fileStream = new FileStream(fullPath, FileMode.Create))
 			{
-				image.CopyTo(fileStream);
-			}
+                if (targetWidth + targetHeight != 0)
+                {
+                    var tmpImage = System.Drawing.Image.FromStream(image.OpenReadStream());
+                    var resized = new Bitmap(tmpImage, new Size(targetWidth, targetHeight));
+                    resized.Save(fileStream, ImageFormat.Jpeg);
+                }
+                else
+                {
+                    image.CopyTo(fileStream);
+                }
+            }
 
 			return newPath;
 		}
