@@ -20,6 +20,11 @@ namespace Portfolio.DataAccess.Data
                 .WithMany(e => e.Sections)
                 .UsingEntity<AlbumSection>();
 
+            modelBuilder.Entity<Section>()
+                .HasOne(e => e.SectionCover)
+                .WithMany(e => e.SectionCovers)
+                .HasForeignKey(e => e.SectionCoverId);
+
             modelBuilder.Entity<Photo>()
                 .HasMany(e => e.Albums)
                 .WithMany(e => e.Photos)
@@ -30,10 +35,10 @@ namespace Portfolio.DataAccess.Data
                 .WithMany(e => e.AlbumCovers)
                 .HasForeignKey(e => e.CoverPhotoId);
 
-            modelBuilder.Entity<Photo>()
-                .HasOne(e => e.OriginalPhoto)
-                .WithMany(e => e.DerivedPhotos)
-                .HasForeignKey(e => e.OriginalPhotoId);
+            modelBuilder.Entity<PhotoVersion>()
+                .HasOne(e => e.Photo)
+                .WithMany(e => e.PhotoVersions)
+                .HasForeignKey(e => e.PhotoId);
         }
 
         public DbSet<Photo> Photo { get; set; }
@@ -41,6 +46,7 @@ namespace Portfolio.DataAccess.Data
         public DbSet<Section> Section { get; set; }
         public DbSet<AlbumPhoto> AlbumPhoto { get; set; }
         public DbSet<AlbumSection> AlbumSection { get; set; }
+        public DbSet<PhotoVersion> PhotoVersion { get; set; }
         public DbSet<Review> Review { get; set; }
         public DbSet<ResolutionConfig> ResolutionConfig { get; set; }
 

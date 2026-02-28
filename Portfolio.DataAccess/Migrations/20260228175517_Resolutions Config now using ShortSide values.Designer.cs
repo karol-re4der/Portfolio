@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Portfolio.DataAccess.Data;
 namespace Portfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260228175517_Resolutions Config now using ShortSide values")]
+    partial class ResolutionsConfignowusingShortSidevalues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,46 +303,30 @@ namespace Portfolio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
 
                     b.Property<bool>("NSFW")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Photo");
-                });
-
-            modelBuilder.Entity("Portfolio.Models.Models.PhotoVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("OriginalPhotoId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsOriginal")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PhotoId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PhotoId");
+                    b.HasIndex("OriginalPhotoId");
 
-                    b.ToTable("PhotoVersion");
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("Portfolio.Models.Models.ResolutionConfig", b =>
@@ -516,15 +503,13 @@ namespace Portfolio.Migrations
                     b.Navigation("Section");
                 });
 
-            modelBuilder.Entity("Portfolio.Models.Models.PhotoVersion", b =>
+            modelBuilder.Entity("Portfolio.Models.Models.Photo", b =>
                 {
-                    b.HasOne("Portfolio.Models.Models.Photo", "Photo")
-                        .WithMany("PhotoVersions")
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Portfolio.Models.Models.Photo", "OriginalPhoto")
+                        .WithMany("DerivedPhotos")
+                        .HasForeignKey("OriginalPhotoId");
 
-                    b.Navigation("Photo");
+                    b.Navigation("OriginalPhoto");
                 });
 
             modelBuilder.Entity("Portfolio.Models.Models.Review", b =>
@@ -558,7 +543,7 @@ namespace Portfolio.Migrations
 
                     b.Navigation("AlbumsPhotos");
 
-                    b.Navigation("PhotoVersions");
+                    b.Navigation("DerivedPhotos");
                 });
 
             modelBuilder.Entity("Portfolio.Models.Models.Section", b =>

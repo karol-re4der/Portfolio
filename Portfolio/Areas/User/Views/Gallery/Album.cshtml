@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = Model.Album.AlbumName;
-    string PageCover = Model.Album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : Model.Album.CoverPhoto.Path;
+    string PageCover = Model.Album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(Model.Album.CoverPhoto, 0).Path;
 }
 
 <div class="modal fade" id="singlePhotoModal" tabindex="-1" aria-hidden="true">
@@ -66,8 +66,8 @@
                 @foreach(Photo photo in Model.Album.Photos)
                 {
                     <div class="col m-0 p-0 hasOverlay">
-                        <a href="" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-width="@photo.Width" data-bs-height="@photo.Height" data-bs-target="#singlePhotoModal">
-                            <img src=@photo.Path class="img-fluid" alt="...">
+                        <a href="" data-bs-toggle="modal" data-bs-path="@ImageUtility.ImageMatchSize(photo, 0).Path" data-bs-width="@ImageUtility.ImageMatchSize(photo, 0).Width" data-bs-height="@@ImageUtility.ImageMatchSize(photo, 0).Height" data-bs-target="#singlePhotoModal">
+                            <img src=@ImageUtility.ImageMatchSize(photo, 540).Path class="img-fluid" alt="...">
                         </a>
 
                         @if (SignInManager.IsSignedIn(User))
@@ -80,7 +80,7 @@
                                     <a class="btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                        <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-path="@photo.Path" data-bs-width="@photo.Width" data-bs-height="@photo.Height" data-bs-target="#singlePhotoModal">
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-path="@ImageUtility.ImageMatchSize(photo, 0).Path" data-bs-width="@@ImageUtility.ImageMatchSize(photo, 0).Width" data-bs-height="@@ImageUtility.ImageMatchSize(photo, 0).Height" data-bs-target="#singlePhotoModal">
                                         <i class="bi bi-zoom-in"></i>
                                     </a>
                                 </div>

@@ -71,7 +71,7 @@
 
                 foreach(Review review in Model.Reviews)
                 {
-                    PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : review.ReviewPhoto.Path;
+                    PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(review.ReviewPhoto, 0).Path;
                     <figure class="col-lg-4 text-center position-relative hasOverlay">
                         <img class="object-fit-cover rounded-circle" src="@PhotoPath" width="@ImageUtility.REVIEW_COVER_WIDTH" height="@ImageUtility.REVIEW_COVER_HEIGHT" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
 
@@ -142,7 +142,7 @@
                     </div>
                     <div class="col-md-5 px-0 order-0 hasOverlay">
                         <a class="w-100 h-100" href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <img src="@ImageUtility.PathOrPlaceholder(sect?.SectionCover?.Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto w-100" role="img" aria-label="Section Cover" focusable="false" style="max-width:@(ImageUtility.SECTION_COVER_WIDTH)px" />
+                            <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto w-100" role="img" aria-label="Section Cover" focusable="false" style="max-width:@(ImageUtility.SECTION_COVER_WIDTH)px" />
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {

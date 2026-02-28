@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Portfolio.Models.Models;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -52,5 +53,15 @@ namespace Portfolio.Utility.Utility.Image
 		{
 			return string.IsNullOrWhiteSpace(path) ? GetPlaceholder(vertical) : path;
 		}
+
+        public static PhotoVersion ImageMatchSize(Photo photo, int shortSide)
+        {
+            if (photo?.PhotoVersions == null || photo?.PhotoVersions.Count()==0) return new PhotoVersion() { Path = GetPlaceholder(true), Width=1080, Height=1350 };
+            if (shortSide == 0) return photo.PhotoVersions.OrderByDescending(x=>x.IsOriginal).ThenByDescending(x => Math.Min(x.Width, x.Height)).First();
+
+            PhotoVersion ver = photo.PhotoVersions.OrderBy(x => Math.Abs(shortSide - Math.Min(x.Width, x.Height))).First();
+
+            return ver != null ? ver : photo.PhotoVersions.First(x => x.IsOriginal);
+        }
     }
 }

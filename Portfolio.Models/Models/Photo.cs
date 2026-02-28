@@ -8,20 +8,13 @@ namespace Portfolio.Models.Models
         [Key]
         public int Id { get; set; }
 
-        public string Path { get; set; } = "";
         public bool NSFW { get; set; }
         public bool IsHidden { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
 
         public List<Album> Albums { get; set; }
         public List<AlbumPhoto> AlbumsPhotos { get; set; }
-
         public List<Album> AlbumCovers { get; set; }
-
-        public int? OriginalPhotoId { get; set; }
-        public Photo OriginalPhoto { get; set; }
-        public List<Photo> DerivedPhotos { get; set; }
-
+        public List<Section> SectionCovers { get; set; }
+        public List<PhotoVersion> PhotoVersions{ get; set; }
     }
 }

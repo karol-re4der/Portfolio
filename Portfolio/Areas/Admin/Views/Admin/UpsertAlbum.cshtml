@@ -57,7 +57,7 @@
 			<hr class="d-sm-none mt-3"/>
 			<div class="col-12 col-sm-4">
 				<label asp-for="Album.CoverPhoto" for="upsert-album-cover" class="form-label"></label>
-				<img id="upsert-preview" class="object-fit-cover mb-3 border border-1 rounded-1 mw-100 mx-auto" style="aspect-ratio: @((float)@ImageUtility.ALBUM_COVER_WIDTH/ImageUtility.ALBUM_COVER_HEIGHT);" src="@ImageUtility.PathOrPlaceholder(Model.Album?.CoverPhoto?.Path, true)" />
+				<img id="upsert-preview" class="object-fit-cover mb-3 border border-1 rounded-1 mw-100 mx-auto" style="aspect-ratio: @((float)@ImageUtility.ALBUM_COVER_WIDTH/ImageUtility.ALBUM_COVER_HEIGHT);" src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(Model.Album?.CoverPhoto, ImageUtility.ALBUM_COVER_WIDTH).Path, true)" />
 				<input asp-for="PreviewImage" class="form-control" type="file" id="upsert-album-cover" onchange="refreshPreview(this.files, 'upsert-preview')" />
 				<span class="text-secondary">Target size: @ImageUtility.ALBUM_COVER_WIDTH x @ImageUtility.ALBUM_COVER_HEIGHT</span>
 			</div>

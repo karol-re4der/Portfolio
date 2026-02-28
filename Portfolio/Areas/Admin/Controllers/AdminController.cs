@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Areas.User.Controllers;
 using Portfolio.DataAccess.Data;
+using Portfolio.Migrations;
 using Portfolio.Models.Models;
 using Portfolio.Models.Models.ViewModels;
 using Portfolio.Utility.Utility.Image;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using ResolutionConfig = Portfolio.Models.Models.ResolutionConfig;
 
 namespace Portfolio.Areas.Admin.Controllers
 {
@@ -66,36 +68,71 @@ namespace Portfolio.Areas.Admin.Controllers
 				{
 					if (ModelState.IsValid)
 					{
-						Section section = viewModel.Section;
+						Section newSection = viewModel.Section;
+                        List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
 
-						if (viewModel.PreviewImage != null)
+                        if (viewModel.PreviewImage != null)
 						{
-							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
+                            Photo newPhoto = new Photo()
+                            {
+                                IsHidden = false,
+                                NSFW = false
+                            };
+                            _db.Photo.Update(newPhoto);
+                            _db.SaveChanges();
+                            newSection.SectionCoverId = newPhoto.Id;
+                            _db.Section.Update(newSection);
+                            _db.SaveChanges();
 
-                            int x, y = 0;
+                            //Original photo
+                            string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
+
+                            int originalX, originalY = 0;
                             using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
                             {
-                                x = image.Width;
-                                y = image.Height;
+                                originalX = image.Width;
+                                originalY = image.Height;
                             };
 
-                            Photo newPhoto = new Photo()
-							{
-								Width = x,
-								Height = y,
-								Path = photoPath,
-								IsHidden = false,
-								NSFW = false
-							};
+                            PhotoVersion newVersion = new PhotoVersion()
+                            {
+                                Width = originalX,
+                                Height = originalY,
+                                Path = photoPath,
+                                PhotoId = newPhoto.Id
+                            };
+                            _db.PhotoVersion.Update(newVersion);
+                            _db.SaveChanges();
 
-							_db.Photo.Update(newPhoto);
-							_db.SaveChanges();
-							section.SectionCoverId = newPhoto.Id;
+                            //Resized versions
+                            double aspect = 1;
+                            int longSide = 0;
+                            int newWidth = 0;
+                            int newHeight = 0;
 
+                            foreach (ResolutionConfig res in resolutions)
+                            {
+                                if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+                                aspect = (double)originalX / originalY;
+                                longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+                                newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                                newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+                                photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage, newWidth, newHeight);
+
+                                newVersion = new PhotoVersion()
+                                {
+                                    Width = newWidth,
+                                    Height = newHeight,
+                                    Path = photoPath,
+                                    PhotoId = newPhoto.Id
+                                };
+
+                                _db.PhotoVersion.Update(newVersion);
+                                _db.SaveChanges();
+                            }
 						}
-
-						_db.Section.Update(section);
-						_db.SaveChanges();
 					}
 					else
 					{
@@ -149,40 +186,77 @@ namespace Portfolio.Areas.Admin.Controllers
 				{
 					if (ModelState.IsValid)
 					{
-						Album album = viewModel.Album;
+						Album newAlbum = viewModel.Album;
+                        List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
 
 						if (viewModel.PreviewImage != null)
-                        {
+						{
+							Photo newPhoto = new Photo()
+							{
+								IsHidden = false,
+								NSFW = false
+							};
+							_db.Photo.Update(newPhoto);
+							_db.SaveChanges();
+							newAlbum.CoverPhotoId = newPhoto.Id;
+
+							//Original photo
 							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
-                            int x, y = 0;
-                            using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
-                            {
-                                x = image.Width;
-                                y = image.Height;
-                            };
+							int originalX, originalY = 0;
+							using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
+							{
+								originalX = image.Width;
+								originalY = image.Height;
+							}
+							;
 
-                            Photo newPhoto = new Photo()
-                            {
-                                Width = x,
-                                Height = y,
-                                Path = photoPath,
-                                IsHidden = false,
-                                NSFW = false
-                            };
-
-                            _db.Photo.Update(newPhoto);
+							PhotoVersion newVersion = new PhotoVersion()
+							{
+								Width = originalX,
+								Height = originalY,
+								Path = photoPath,
+								PhotoId = newPhoto.Id
+							};
+							_db.PhotoVersion.Update(newVersion);
 							_db.SaveChanges();
-							album.CoverPhotoId = newPhoto.Id;
 
+							//Resized versions
+							double aspect = 1;
+							int longSide = 0;
+							int newWidth = 0;
+							int newHeight = 0;
+
+							foreach (ResolutionConfig res in resolutions)
+							{
+								if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+								aspect = (double)originalX / originalY;
+								longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+								newWidth = (aspect > 1) ? longSide : res.ShortSide;
+								newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+								photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage, newWidth, newHeight);
+
+								newVersion = new PhotoVersion()
+								{
+									Width = newWidth,
+									Height = newHeight,
+									Path = photoPath,
+									PhotoId = newPhoto.Id
+								};
+
+								_db.PhotoVersion.Update(newVersion);
+								_db.SaveChanges();
+							}
 						}
 
-						_db.Album.Update(album);
+						_db.Album.Update(newAlbum);
 						_db.SaveChanges();
 
-						_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == album.Id));
+						_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == newAlbum.Id));
 
-                        _db.AlbumSection.AddRange(viewModel.SectionIdSelected.Select(x => new AlbumSection() { AlbumId = album.Id, SectionId = x }));
+                        _db.AlbumSection.AddRange(viewModel.SectionIdSelected.Select(x => new AlbumSection() { AlbumId = newAlbum.Id, SectionId = x }));
 						_db.SaveChanges();
 
 					}
@@ -305,15 +379,25 @@ namespace Portfolio.Areas.Admin.Controllers
 					if (ModelState.IsValid)
 					{
 						Album album = viewModel.Album;
-						List<ResolutionConfig> resolutions = _db.ResolutionConfig.Where(x => 1 == 1).ToList();
+						List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
 
 						if (viewModel.PhotosUploaded != null && viewModel.PhotosUploaded.Count()>0)
 						{
-							foreach (FormFile file in viewModel.PhotosUploaded)
+                            
+
+                            foreach (FormFile file in viewModel.PhotosUploaded)
 							{
-								//Original photo
-								int originalId = 0;
-								double originalAspect = 1;
+                                Photo newPhoto = new Photo()
+                                {
+                                    IsHidden = false,
+                                    NSFW = false
+                                };
+                                _db.Photo.Update(newPhoto);
+                                _db.SaveChanges();
+                                _db.AlbumPhoto.Add(new AlbumPhoto() { AlbumId = album.Id, PhotoId = newPhoto.Id });
+                                _db.SaveChanges();
+
+                                //Original photo
                                 string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file);
 
 								int originalX, originalY = 0;
@@ -322,49 +406,45 @@ namespace Portfolio.Areas.Admin.Controllers
                                     originalX = image.Width;
                                     originalY = image.Height;
                                 };
-								originalAspect = (double)originalX / originalY;
 
-                                Photo newPhoto = new Photo()
-								{
-									Width = originalX,
-									Height = originalY,
-									Path = photoPath,
-									IsHidden = false,
-									NSFW = false
-								};
-
-                                _db.Photo.Update(newPhoto);
-								_db.SaveChanges();
-                                originalId = newPhoto.Id;
-                                _db.AlbumPhoto.Add(new AlbumPhoto() { AlbumId = album.Id, PhotoId = newPhoto.Id });
-								_db.SaveChanges();
+                                PhotoVersion newVersion = new PhotoVersion()
+                                {
+                                    Width = originalX,
+                                    Height = originalY,
+                                    Path = photoPath,
+									PhotoId = newPhoto.Id
+                                };
+                                _db.PhotoVersion.Update(newVersion);
+                                _db.SaveChanges();
 
                                 //Resized versions
                                 double aspect = 1;
+								int longSide = 0;
+								int newWidth = 0;
+                                int newHeight = 0;
 
                                 foreach (ResolutionConfig res in resolutions)
 								{
-									aspect = (double) res.Width / res.Height;
-                                    if (originalAspect < 1 && aspect >= 1) continue; //no rotating
-                                    if (originalAspect > 1 && aspect <= 1) continue; //no rotating
-									if (res.Width > originalX || res.Height > originalY) continue; //no upsizing
+                                    if (res.ShortSide>Math.Min(originalX, originalY)) continue; //no upsizing
+									aspect = (double)originalX / originalY;
+									longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
 
+									newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                                    newHeight = (aspect > 1) ? res.ShortSide : longSide;
 
-                                    photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file, res.Width, res.Height);
+                                    photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, file, newWidth, newHeight);
 
-                                    newPhoto = new Photo()
-									{
-										Width = res.Width,
-										Height = res.Height,
+                                    newVersion = new PhotoVersion()
+                                    {
+                                        Width = newWidth,
+										Height = newHeight,
 										Path = photoPath,
-										IsHidden = false,
-										NSFW = false,
-										OriginalPhotoId = originalId
-									};
+                                        PhotoId = newPhoto.Id
+                                    };
 
-									_db.Photo.Update(newPhoto);
+									_db.PhotoVersion.Update(newVersion);
 									_db.SaveChanges();
-								}
+                                }
                             }
                         }
 					}
@@ -390,40 +470,77 @@ namespace Portfolio.Areas.Admin.Controllers
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-
 				try
 				{
 					if (ModelState.IsValid)
 					{
-						Review review = viewModel.Review;
+						Review newReview = viewModel.Review;
+                        List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
 
-						if (viewModel.PreviewImage != null)
+                        if (viewModel.PreviewImage != null)
 						{
-							string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
-							int x, y = 0;
-							using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
-							{
-								x = image.Width;
-								y = image.Height;
-							};
+                            Photo newPhoto = new Photo()
+                            {
+                                IsHidden = false,
+                                NSFW = false
+                            };
+                            _db.Photo.Update(newPhoto);
+                            _db.SaveChanges();
+                            newReview.ReviewPhotoId = newPhoto.Id;
 
-							Photo newPhoto = new Photo()
-							{
-								Width = x,
-								Height = y,
-								Path = photoPath,
-								IsHidden = false,
-								NSFW = false
-							};
+                            //Original photo
+                            string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
-							_db.Photo.Update(newPhoto);
-							_db.SaveChanges();
-							review.ReviewPhotoId = newPhoto.Id;
+                            int originalX, originalY = 0;
+                            using (var image = Image.FromStream(viewModel.PreviewImage.OpenReadStream()))
+                            {
+                                originalX = image.Width;
+                                originalY = image.Height;
+                            }
+                            ;
 
+                            PhotoVersion newVersion = new PhotoVersion()
+                            {
+                                Width = originalX,
+                                Height = originalY,
+                                Path = photoPath,
+                                PhotoId = newPhoto.Id
+                            };
+                            _db.PhotoVersion.Update(newVersion);
+                            _db.SaveChanges();
+
+                            //Resized versions
+                            double aspect = 1;
+                            int longSide = 0;
+                            int newWidth = 0;
+                            int newHeight = 0;
+
+                            foreach (ResolutionConfig res in resolutions)
+                            {
+                                if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+                                aspect = (double)originalX / originalY;
+                                longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+                                newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                                newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+                                photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage, newWidth, newHeight);
+
+                                newVersion = new PhotoVersion()
+                                {
+                                    Width = newWidth,
+                                    Height = newHeight,
+                                    Path = photoPath,
+                                    PhotoId = newPhoto.Id
+                                };
+
+                                _db.PhotoVersion.Update(newVersion);
+                                _db.SaveChanges();
+                            }
 						}
 
-						_db.Review.Update(review);
+						_db.Review.Update(newReview);
 						_db.SaveChanges();
 					}
 					else

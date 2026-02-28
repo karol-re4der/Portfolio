@@ -5,7 +5,7 @@
 
 @{
     ViewData["Title"] = Model.Section.SectionName;
-    string PageCover = Model.Section.SectionCover == null ? ImageUtility.GetPlaceholder(true) : Model.Section.SectionCover.Path;
+    string PageCover = Model.Section.SectionCover == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(Model.Section.SectionCover, 0).Path;
 }
 
 <section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
@@ -65,7 +65,7 @@
                                     <a href="@Url.Action("Album", "Gallery", new {album=album.UrlRef, returnRef=Model.Section.UrlRef})">
                                         <div class="ratio" style="--bs-aspect-ratio: 125%;">
                                             @{
-                                                string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : album.CoverPhoto.Path;
+                                                string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(album.CoverPhoto, 0).Path;
                                             }
                                             <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@Cover" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
                                         </div>

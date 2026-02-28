@@ -12,7 +12,6 @@ namespace Portfolio.Models.Models
         [Key]
         public int Id { get; set; }
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int ShortSide { get; set; }
     }
 }
