@@ -63,3 +63,9 @@ option:checked {
     background-color: rgb(39, 43, 48);
     color: white;
 }
+
+.img_nsfw {
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    filter: blur(10px);
+}

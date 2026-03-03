@@ -32,3 +32,13 @@ window.addEventListener('resize', resizeModal);
 $('.requireConfirmation').on('click', function () {
     return confirm('Na pewno?');
 });
+
+function showNSFW(element) {
+    var image = element.getElementsByClassName('img_nsfw')[0];
+    image.classList.remove('img_nsfw');
+
+    var labels = element.getElementsByClassName('img_nsfw_label');
+    for (let i = 0; i < labels.length; i++) {
+        labels[i].style = 'display:none;';
+    }
+}
