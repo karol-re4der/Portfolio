@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess.Data;
 using Portfolio.Models.Models.ViewModels;
+using System.Diagnostics;
+using System.Net.Mail;
+using System.Web.Helpers;
 
 namespace Portfolio.Areas.User.Controllers
 {

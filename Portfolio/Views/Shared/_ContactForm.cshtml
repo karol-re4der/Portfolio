@@ -12,36 +12,31 @@
 
     <div class="m-2">
         <p class="opacity-75 mt-4 mb-0">Lub napisz na maila:</p>
-        <form>
+        <div style="display:none" id="contact-me-result">
+            <p class="fs-1 fw-bold">Wiadomość została wysłana!</p>
+            <p class="fs-6 fw-italic">Oczekuj na odpowiedź!</p>
+        </div>
+        <form id="contact-me-form">
             <div class="row justify-content-center m-4">
                 <div class="col-12 col-md-4">
-                  <label for="username" class="form-label">Twoje imie</label>
+                  <label for="FormUserName" class="form-label">Twoje imie</label>
                   <div class="input-group has-validation">
-                    <input type="text" class="form-control" id="username" placeholder="Imie" required="">
-                  <div class="invalid-feedback">
-                      Your username is required.
-                    </div>
+                    <input type="text" class="form-control" id="FormUserName" name="FormUserName" placeholder="Imie" required>
                   </div>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="email" class="form-label">Twój email</label>
+                    <label for="FormUserEmail" class="form-label">Twój email</label>
                     <div class="input-group has-validation">
-                        <input type="email" class="form-control" id="email" placeholder="ty@example.com">
-                    </div>
-                    <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
+                        <input type="email" class="form-control" id="FormUserEmail" name="FormUserEmail" placeholder="ty@email.pl" required>
                     </div>
                 </div>
             </div>
 
             <div class="row justify-content-center m-4">
                 <div class="col-12 col-md-10">
-                    <label for="content-tiny" class="form-label">Twoja wiadomość</label>
-                    <textarea id="content-tiny"></textarea>
-                    <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
-                    </div>
+                    <label for="FormBodyText" class="form-label">Twoja wiadomość</label>
+                    <textarea id="FormBodyText" name="FormBodyText">Twoja wiadomość</textarea>
                 </div>
             </div>
 
@@ -53,3 +48,5 @@
         </form>
     </div>
 </div>
+
+<script src="~/js/mailingUtility.js"></script>
