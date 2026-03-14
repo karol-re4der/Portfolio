@@ -20,7 +20,7 @@
 </div>
 
 <section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
-    <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@PageCover'); height:32rem;">
+    <div class="row p-0 headerImage m-0 mw-100 w-100 verticalMotionImage" style="backgroundPositionY:25%;background-image: url('@PageCover'); height:32rem;">
         <div class="col-lg-6 col-md-8 m-auto mh-100 overflow-hidden">
             <h1 class="fw-light text-light">@Model.Album.AlbumName</h1>
             <p class="lead text-light">@Model.Album.AlbumDescription</p>
@@ -115,6 +115,8 @@
 
 @section Scripts {
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="~/js/imageMotion.js"></script>
+
     <script>
         $('#masonryAlbum').imagesLoaded().progress(
             function () {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Models.Models;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 
 namespace Portfolio.DataAccess.Data
@@ -39,6 +40,16 @@ namespace Portfolio.DataAccess.Data
                 .HasOne(e => e.Photo)
                 .WithMany(e => e.PhotoVersions)
                 .HasForeignKey(e => e.PhotoId);
+
+            modelBuilder.Entity<PhotoPosition>()
+                .HasOne(e => e.Photo)
+                .WithMany(e => e.PhotoPositions)
+                .HasForeignKey(e => e.PhotoId);
+
+            modelBuilder.Entity<PhotoPosition>()
+                .HasOne(e => e.PhotoPositionType)
+                .WithMany(e => e.PhotoPositions)
+                .HasForeignKey(e => e.PhotoPositionTypeId);
         }
 
         public DbSet<Photo> Photo { get; set; }
@@ -49,6 +60,9 @@ namespace Portfolio.DataAccess.Data
         public DbSet<PhotoVersion> PhotoVersion { get; set; }
         public DbSet<Review> Review { get; set; }
         public DbSet<ResolutionConfig> ResolutionConfig { get; set; }
+        public DbSet<PhotoPositionType> PhotoPositionType { get; set; }
+        public DbSet<PhotoPosition> PhotoPosition { get; set; }
+
 
     }
 }

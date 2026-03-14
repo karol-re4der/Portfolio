@@ -16,5 +16,6 @@ namespace Portfolio.Models.Models
         public List<Album> AlbumCovers { get; set; }
         public List<Section> SectionCovers { get; set; }
         public List<PhotoVersion> PhotoVersions{ get; set; }
+        public List<PhotoPosition> PhotoPositions { get; set; }
     }
 }

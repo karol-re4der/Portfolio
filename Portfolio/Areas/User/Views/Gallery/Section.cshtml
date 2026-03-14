@@ -9,7 +9,7 @@
 }
 
 <section class="p-0 text-center container bg-body-primary m-0 mw-100 w-100">
-    <div class="row p-0 headerImage m-0 mw-100 w-100" style="background-image: url('@PageCover'); height:32rem;">
+    <div class="row p-0 headerImage m-0 mw-100 w-100 verticalMotionImage" style="background-position-y:25%;background-image: url('@PageCover'); height:32rem;">
         <div class="col-lg-6 col-md-8 m-auto mh-100 overflow-hidden">
             <h1 class="text-light fw-light">@Model.Section.SectionName</h1>
             <p class="lead text-light overflow-hidden">@Model.Section.SectionDescription</p>
@@ -106,3 +106,7 @@
         <hr class="featurette-divider">
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/imageMotion.js"></script>
+}
