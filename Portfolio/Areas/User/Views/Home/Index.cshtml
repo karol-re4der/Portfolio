@@ -24,7 +24,7 @@
                         <p class="opacity-75">Sprawdź co napisali o mnie klienci!</p>
                         <p><a class="btn btn-lg btn-primary" href="#reviews-section">Recenzje</a></p>
                     </div>
-                </div>
+                </div>/ 
             </div>
             <div class="carousel-item">
                 <img src="res/photo/placeholder_hor_1113.jpg" class="carousel-image w-100 h-100"/>
@@ -142,7 +142,8 @@
                     </div>
                     <div class="col-md-5 px-0 order-0 hasOverlay">
                         <a class="w-100 h-100" href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto w-100" role="img" aria-label="Section Cover" focusable="false" style="max-width:@(ImageUtility.SECTION_COVER_WIDTH)px" />
+                            <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" style="width: 400px; height: 500px; object-fit: cover;" alt="...">
+                            @* <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" class="bd-placeholder-img bd-placeholder-img-lg featurette-image object-fit-cover mx-auto w-100" role="img" aria-label="Section Cover" focusable="false" style="max-width:@(ImageUtility.SECTION_COVER_WIDTH)px" /> *@
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {

@@ -10,10 +10,10 @@ namespace Portfolio.Utility.Utility.Image
     {
         public const string PATH_PHOTOS = "/res/photo/";
 		public const string PATH_PLACEHOLDERS = "/res/photo/placeholder/";
-		public const int ALBUM_COVER_WIDTH = 400;
-		public const int ALBUM_COVER_HEIGHT = 500;
-        public const int SECTION_COVER_WIDTH = 400;
-        public const int SECTION_COVER_HEIGHT = 500;
+		public const int ALBUM_COVER_WIDTH = 1080;
+		public const int ALBUM_COVER_HEIGHT = 1350;
+        public const int SECTION_COVER_WIDTH = 1080;
+        public const int SECTION_COVER_HEIGHT = 1350;
         public const int REVIEW_COVER_WIDTH = 140;
         public const int REVIEW_COVER_HEIGHT = 140;
 

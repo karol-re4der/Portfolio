@@ -68,10 +68,10 @@
                     if(!photo.IsHidden || SignInManager.IsSignedIn(User))
                     {
                         <div class="col m-0 p-0 hasOverlay" style="overflow:hidden;">
-                            <a onclick="showNSFW(this)" href="" data-bs-toggle="modal" data-bs-path="@ImageUtility.ImageMatchSize(photo, 0).Path" data-bs-width="@ImageUtility.ImageMatchSize(photo, 1080).Width" data-bs-height="@@ImageUtility.ImageMatchSize(photo, 1080).Height" data-bs-target="#singlePhotoModal">
+                            <a onclick="showNSFW(this)" href="" data-bs-toggle="modal" data-bs-path="@ImageUtility.ImageMatchSize(photo, 0).Path" data-bs-width="@ImageUtility.ImageMatchSize(photo, 0).Width" data-bs-height="@@ImageUtility.ImageMatchSize(photo, 0).Height" data-bs-target="#singlePhotoModal">
                                 @if (photo.NSFW)
                                 {
-                                    <img src=@ImageUtility.ImageMatchSize(photo, 540).Path class="img-fluid img_nsfw" alt="...">
+                                    <img src=@ImageUtility.ImageMatchSize(photo, 1080).Path class="img-fluid img_nsfw" alt="...">
                                     <div class="position-absolute top-50 start-50 translate-middle img_nsfw_label">
                                         <p class="opacity-75 fs-5 text-center">NSFW</p>
                                         <p class="opacity-75 fs-6 text-center">Kliknij aby odkryć</p>
@@ -79,7 +79,7 @@
                                 }
                                 else
                                 {
-                                    <img src=@ImageUtility.ImageMatchSize(photo, 540).Path class="img-fluid" alt="...">
+                                    <img src=@ImageUtility.ImageMatchSize(photo, 1080).Path class="img-fluid" alt="...">
                                 }
                             </a>
 
