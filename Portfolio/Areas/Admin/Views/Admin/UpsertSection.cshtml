@@ -36,6 +36,9 @@
 				<label asp-for="Section.SectionDescription" for="upsert-section-description" class="form-label"></label>
 				<textarea asp-for="Section.SectionDescription" class="form-control mb-3" id="upsert-section-description" rows="4"></textarea>
 
+				<label asp-for="Section.Order" for="upsert-section-order" class="form-label"></label>
+				<input asp-for="Section.Order" type="number" class="form-control mb-3" id="upsert-section-Order" rows="2"></input>
+
 				<div class="form-check form-check-inline">
 					<input asp-for="Section.IsHidden" class="form-check-input mb-3" type="checkbox" id="upsert-section-hidden" />
 					<label asp-for="Section.IsHidden" for="upsert-section-hidden" class="form-label"></label>

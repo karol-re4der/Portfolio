@@ -81,9 +81,7 @@ namespace Portfolio.Areas.Admin.Controllers
                             _db.Photo.Update(newPhoto);
                             _db.SaveChanges();
                             newSection.SectionCoverId = newPhoto.Id;
-                            _db.Section.Update(newSection);
-                            _db.SaveChanges();
-
+                            
                             //Original photo
                             string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.PreviewImage);
 
@@ -99,7 +97,8 @@ namespace Portfolio.Areas.Admin.Controllers
                                 Width = originalX,
                                 Height = originalY,
                                 Path = photoPath,
-                                PhotoId = newPhoto.Id
+                                PhotoId = newPhoto.Id,
+                                IsOriginal = true
                             };
                             _db.PhotoVersion.Update(newVersion);
                             _db.SaveChanges();
@@ -133,7 +132,9 @@ namespace Portfolio.Areas.Admin.Controllers
                                 _db.SaveChanges();
                             }
 						}
-					}
+                        _db.Section.Update(newSection);
+                        _db.SaveChanges();
+                    }
 					else
 					{
 						return NotFound();
@@ -208,16 +209,16 @@ namespace Portfolio.Areas.Admin.Controllers
 							{
 								originalX = image.Width;
 								originalY = image.Height;
-							}
-							;
+							};
 
 							PhotoVersion newVersion = new PhotoVersion()
 							{
 								Width = originalX,
 								Height = originalY,
 								Path = photoPath,
-								PhotoId = newPhoto.Id
-							};
+								PhotoId = newPhoto.Id,
+                                IsOriginal = true
+                            };
 							_db.PhotoVersion.Update(newVersion);
 							_db.SaveChanges();
 
@@ -407,13 +408,14 @@ namespace Portfolio.Areas.Admin.Controllers
                                     originalY = image.Height;
                                 };
 
-                                PhotoVersion newVersion = new PhotoVersion()
-                                {
-                                    Width = originalX,
-                                    Height = originalY,
-                                    Path = photoPath,
-									PhotoId = newPhoto.Id
-                                };
+								PhotoVersion newVersion = new PhotoVersion()
+								{
+									Width = originalX,
+									Height = originalY,
+									Path = photoPath,
+									PhotoId = newPhoto.Id,
+									IsOriginal = true
+								};
                                 _db.PhotoVersion.Update(newVersion);
                                 _db.SaveChanges();
 
@@ -505,7 +507,8 @@ namespace Portfolio.Areas.Admin.Controllers
                                 Width = originalX,
                                 Height = originalY,
                                 Path = photoPath,
-                                PhotoId = newPhoto.Id
+                                PhotoId = newPhoto.Id,
+                                IsOriginal = true
                             };
                             _db.PhotoVersion.Update(newVersion);
                             _db.SaveChanges();
