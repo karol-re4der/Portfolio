@@ -1,0 +1,119 @@
+﻿@using Portfolio.Models.Models.ViewModels
+@model UpsertCarouselViewModel
+
+<div class="container p-0 m-0 mw-100">
+	<form asp-action="UpsertCarousel" id="upsert-carousel" enctype="multipart/form-data" autocomplete="off">
+		<input hidden asp-for="CarouselLeft.Id" type="text" class="list-group-item" id="upsert-carousel-left-id">
+		<input hidden asp-for="CarouselMid.Id" type="text" class="list-group-item" id="upsert-carousel-mid-id">
+		<input hidden asp-for="CarouselRight.Id" type="text" class="list-group-item" id="upsert-carousel-right-id">
+
+	    <hr />
+	    <h1 class="text-center">Edytuj zdjęcia z karuzeli</h1>
+	    <hr />
+        <div id="myCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class="active" aria-current="true"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img id="upsert-preview-left" src="@Model.CarouselLeft.Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <div class="container">
+                        <div class="carousel-caption text-start">
+                            <h1>Slide lewy</h1>
+                            <div class="row justify-content-start">
+                                <div class="col-4">
+                                    <input multiple asp-for="CarouselPhotoLeft" class="form-control" type="file" id="upsert-carousel-left" onchange="refreshPreview(this.files, 'upsert-preview-left')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <hr />
+        <div id="myCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class="active" aria-current="true"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img id="upsert-preview-center" src="@Model.CarouselMid.Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <div class="container">
+                        <div class="carousel-caption text">
+                            <h1>Slide środkowy</h1>
+                            <div class="row justify-content-center">
+                                <div class="col-4">
+                                    <input multiple asp-for="CarouselPhotoMid" class="form-control" type="file" id="upsert-carousel-left" onchange="refreshPreview(this.files, 'upsert-preview-center')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>/ 
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <hr />
+        <div id="myCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class="active" aria-current="true"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img id="upsert-preview-right" src="@Model.CarouselRight.Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <div class="container">
+                        <div class="carousel-caption text-end">
+                            <h1>Slide prawy</h1>
+                            <div class="row justify-content-end">
+                                <div class="col-4">
+                                    <input multiple asp-for="CarouselPhotoRight" class="form-control" type="file" id="upsert-carousel-left" onchange="refreshPreview(this.files, 'upsert-preview-right')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>/ 
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+	    <hr />
+        <div class="row justify-content-center">
+            <button class="btn btn-outline-primary w-auto" type="submit">Zapisz</button>
+        </div>
+	    <hr />
+    </form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/imagePreview.js"></script>
+}

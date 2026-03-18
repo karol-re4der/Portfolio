@@ -605,9 +605,254 @@ namespace Portfolio.Areas.Admin.Controllers
 			}
 			return NotFound();
 		}
-		#endregion
+        #endregion
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        #region Carousel
+        [HttpPost]
+        public IActionResult UpsertCarousel(UpsertCarouselViewModel viewModel)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                try
+                {
+                    List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
+                    Carousel existingCarousel;
+
+                    //Left
+                    if (viewModel.CarouselPhotoLeft != null)
+                    {
+                        existingCarousel = _db.Carousel.Where(x => x.Id == viewModel.CarouselLeft.Id).First();
+                            
+                        Photo newPhoto = new Photo()
+                        {
+                            IsHidden = false,
+                            NSFW = false
+                        };
+                        _db.Photo.Update(newPhoto);
+                        _db.SaveChanges();
+                        existingCarousel.PhotoId = newPhoto.Id;
+
+                        //Original photo
+                        string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoLeft);
+
+                        int originalX, originalY = 0;
+                        using (var image = Image.FromStream(viewModel.CarouselPhotoLeft.OpenReadStream()))
+                        {
+                            originalX = image.Width;
+                            originalY = image.Height;
+                        };
+
+                        PhotoVersion newVersion = new PhotoVersion()
+                        {
+                            Width = originalX,
+                            Height = originalY,
+                            Path = photoPath,
+                            PhotoId = newPhoto.Id,
+                            IsOriginal = true
+                        };
+                        _db.PhotoVersion.Update(newVersion);
+                        _db.SaveChanges();
+
+                        //Resized versions
+                        double aspect = 1;
+                        int longSide = 0;
+                        int newWidth = 0;
+                        int newHeight = 0;
+
+                        foreach (ResolutionConfig res in resolutions)
+                        {
+                            if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+                            aspect = (double)originalX / originalY;
+                            longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+                            newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                            newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+                            photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoLeft, newWidth, newHeight);
+
+                            newVersion = new PhotoVersion()
+                            {
+                                Width = newWidth,
+                                Height = newHeight,
+                                Path = photoPath,
+                                PhotoId = newPhoto.Id
+                            };
+
+                            _db.PhotoVersion.Update(newVersion);
+                            _db.SaveChanges();
+                        }
+                        _db.Carousel.Update(existingCarousel);
+                        _db.SaveChanges();
+                    }
+
+                    //Mid
+                    if (viewModel.CarouselPhotoMid != null)
+                    {
+                        existingCarousel = _db.Carousel.Where(x => x.Id == viewModel.CarouselMid.Id).First();
+
+                        Photo newPhoto = new Photo()
+                        {
+                            IsHidden = false,
+                            NSFW = false
+                        };
+                        _db.Photo.Update(newPhoto);
+                        _db.SaveChanges();
+                        existingCarousel.PhotoId = newPhoto.Id;
+
+                        //Original photo
+                        string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoMid);
+
+                        int originalX, originalY = 0;
+                        using (var image = Image.FromStream(viewModel.CarouselPhotoMid.OpenReadStream()))
+                        {
+                            originalX = image.Width;
+                            originalY = image.Height;
+                        }
+                        ;
+
+                        PhotoVersion newVersion = new PhotoVersion()
+                        {
+                            Width = originalX,
+                            Height = originalY,
+                            Path = photoPath,
+                            PhotoId = newPhoto.Id,
+                            IsOriginal = true
+                        };
+                        _db.PhotoVersion.Update(newVersion);
+                        _db.SaveChanges();
+
+                        //Resized versions
+                        double aspect = 1;
+                        int longSide = 0;
+                        int newWidth = 0;
+                        int newHeight = 0;
+
+                        foreach (ResolutionConfig res in resolutions)
+                        {
+                            if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+                            aspect = (double)originalX / originalY;
+                            longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+                            newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                            newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+                            photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoMid, newWidth, newHeight);
+
+                            newVersion = new PhotoVersion()
+                            {
+                                Width = newWidth,
+                                Height = newHeight,
+                                Path = photoPath,
+                                PhotoId = newPhoto.Id
+                            };
+
+                            _db.PhotoVersion.Update(newVersion);
+                            _db.SaveChanges();
+                        }
+                        _db.Carousel.Update(existingCarousel);
+                        _db.SaveChanges();
+                    }
+
+                    //Right
+                    if (viewModel.CarouselPhotoRight != null)
+                    {
+                        existingCarousel = _db.Carousel.Where(x => x.Id == viewModel.CarouselRight.Id).First();
+
+                        Photo newPhoto = new Photo()
+                        {
+                            IsHidden = false,
+                            NSFW = false
+                        };
+                        _db.Photo.Update(newPhoto);
+                        _db.SaveChanges();
+                        existingCarousel.PhotoId = newPhoto.Id;
+
+                        //Original photo
+                        string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoRight);
+
+                        int originalX, originalY = 0;
+                        using (var image = Image.FromStream(viewModel.CarouselPhotoRight.OpenReadStream()))
+                        {
+                            originalX = image.Width;
+                            originalY = image.Height;
+                        }
+                        ;
+
+                        PhotoVersion newVersion = new PhotoVersion()
+                        {
+                            Width = originalX,
+                            Height = originalY,
+                            Path = photoPath,
+                            PhotoId = newPhoto.Id,
+                            IsOriginal = true
+                        };
+                        _db.PhotoVersion.Update(newVersion);
+                        _db.SaveChanges();
+
+                        //Resized versions
+                        double aspect = 1;
+                        int longSide = 0;
+                        int newWidth = 0;
+                        int newHeight = 0;
+
+                        foreach (ResolutionConfig res in resolutions)
+                        {
+                            if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
+                            aspect = (double)originalX / originalY;
+                            longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
+
+                            newWidth = (aspect > 1) ? longSide : res.ShortSide;
+                            newHeight = (aspect > 1) ? res.ShortSide : longSide;
+
+                            photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, viewModel.CarouselPhotoRight, newWidth, newHeight);
+
+                            newVersion = new PhotoVersion()
+                            {
+                                Width = newWidth,
+                                Height = newHeight,
+                                Path = photoPath,
+                                PhotoId = newPhoto.Id
+                            };
+
+                            _db.PhotoVersion.Update(newVersion);
+                            _db.SaveChanges();
+                        }
+                        _db.Carousel.Update(existingCarousel);
+                        _db.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        public IActionResult UpsertCarousel()
+        {
+            UpsertCarouselViewModel viewModel = new UpsertCarouselViewModel();
+
+            List<Carousel> carousels = _db.Carousel.Include("Photo").Include("Photo.PhotoVersions").OrderBy(x => x.Order).Take(3).ToList();
+            if(carousels != null && carousels.Count() > 2)
+            {
+                viewModel.CarouselLeft = carousels.ElementAt(0);
+                viewModel.CarouselMid = carousels.ElementAt(1);
+                viewModel.CarouselRight = carousels.ElementAt(2);
+
+                return View(viewModel);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        #endregion
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

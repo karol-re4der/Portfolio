@@ -50,6 +50,11 @@ namespace Portfolio.DataAccess.Data
                 .HasOne(e => e.PhotoPositionType)
                 .WithMany(e => e.PhotoPositions)
                 .HasForeignKey(e => e.PhotoPositionTypeId);
+
+            modelBuilder.Entity<Carousel>()
+                .HasOne(e => e.Photo)
+                .WithMany(e => e.Carousels)
+                .HasForeignKey(e => e.PhotoId);
         }
 
         public DbSet<Photo> Photo { get; set; }
@@ -62,7 +67,7 @@ namespace Portfolio.DataAccess.Data
         public DbSet<ResolutionConfig> ResolutionConfig { get; set; }
         public DbSet<PhotoPositionType> PhotoPositionType { get; set; }
         public DbSet<PhotoPosition> PhotoPosition { get; set; }
-
+        public DbSet<Carousel> Carousel { get; set; }
 
     }
 }

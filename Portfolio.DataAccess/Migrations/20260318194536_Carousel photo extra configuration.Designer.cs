@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Portfolio.DataAccess.Data;
 namespace Portfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318194536_Carousel photo extra configuration")]
+    partial class Carouselphotoextraconfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -292,30 +295,6 @@ namespace Portfolio.Migrations
                     b.ToTable("AlbumSection");
                 });
 
-            modelBuilder.Entity("Portfolio.Models.Models.Carousel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PhotoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
-
-                    b.ToTable("Carousel");
-                });
-
             modelBuilder.Entity("Portfolio.Models.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -589,17 +568,6 @@ namespace Portfolio.Migrations
                     b.Navigation("Section");
                 });
 
-            modelBuilder.Entity("Portfolio.Models.Models.Carousel", b =>
-                {
-                    b.HasOne("Portfolio.Models.Models.Photo", "Photo")
-                        .WithMany("Carousels")
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Photo");
-                });
-
             modelBuilder.Entity("Portfolio.Models.Models.PhotoPosition", b =>
                 {
                     b.HasOne("Portfolio.Models.Models.Photo", "Photo")
@@ -660,8 +628,6 @@ namespace Portfolio.Migrations
                     b.Navigation("AlbumCovers");
 
                     b.Navigation("AlbumsPhotos");
-
-                    b.Navigation("Carousels");
 
                     b.Navigation("PhotoPositions");
 
