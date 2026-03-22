@@ -41,7 +41,7 @@ namespace Portfolio.Areas.Admin.Controllers
 
 			if (sectionId > 0)
 			{
-				existingSection = _db.Section.Include("SectionCover").FirstOrDefault(x => x.Id == sectionId);
+				existingSection = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").FirstOrDefault(x => x.Id == sectionId);
 				if (existingSection == null)
 				{
 					return NotFound();
@@ -284,7 +284,7 @@ namespace Portfolio.Areas.Admin.Controllers
 
             if (albumId > 0)
             {
-                existingAlbum = _db.Album.Include("CoverPhoto").FirstOrDefault(x => x.Id == albumId);
+                existingAlbum = _db.Album.Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").FirstOrDefault(x => x.Id == albumId);
                 if (existingAlbum == null)
                 {
                     return NotFound();
@@ -569,7 +569,7 @@ namespace Portfolio.Areas.Admin.Controllers
 
 			if (reviewId > 0)
 			{
-				existingReview = _db.Review.Include("ReviewPhoto").FirstOrDefault(x => x.Id == reviewId);
+				existingReview = _db.Review.Include("ReviewPhoto").Include("ReviewPhoto.PhotoVersions").FirstOrDefault(x => x.Id == reviewId);
 				if (existingReview == null)
 				{
 					return NotFound();
