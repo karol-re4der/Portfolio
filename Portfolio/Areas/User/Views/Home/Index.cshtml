@@ -75,7 +75,7 @@
 
                 foreach(Review review in Model.Reviews)
                 {
-                    PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(review.ReviewPhoto, 0).Path;
+                    PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(review.ReviewPhoto, 140).Path;
                     <figure class="col-lg-4 text-center position-relative hasOverlay">
                         <img class="object-fit-cover rounded-circle" src="@PhotoPath" width="@ImageUtility.REVIEW_COVER_WIDTH" height="@ImageUtility.REVIEW_COVER_HEIGHT" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
 
