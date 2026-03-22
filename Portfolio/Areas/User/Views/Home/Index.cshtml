@@ -135,8 +135,8 @@
                 i++;
             }
             @foreach(Section sect in Model.Sections){
-                <div class="row mx-0 position-relative text-center text-md-@(i%2==1?"start":"end")">
-                    <div class="col-md-7 order-1 order-md-@(i%2) mt-4 mt-md-0">
+                <div class="row mx-0 position-relative text-center text-lg-@(i%2==1?"start":"end")">
+                    <div class="col-lg-7 order-1 order-lg-@(i%2) mt-4 mt-md-0">
                         <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
                             <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
                             <p class="lead">
@@ -144,7 +144,7 @@
                             </p>
                         </a>
                     </div>
-                    <div class="col-md-5 px-0 order-0 hasOverlay">
+                    <div class="col-lg-5 px-0 order-0 hasOverlay">
                         <a class="w-100 h-100" href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
                             <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" style="width: 400px; height: 500px; object-fit: cover;" alt="...">
                         </a>
