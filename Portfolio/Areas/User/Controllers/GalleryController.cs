@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess.Data;
 using Portfolio.Models;
@@ -14,11 +15,14 @@ namespace Portfolio.Areas.User.Controllers
     {
         private readonly ILogger<GalleryController> _logger;
         private readonly ApplicationDbContext _db;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public GalleryController(ILogger<GalleryController> logger, ApplicationDbContext db)
+
+        public GalleryController(ILogger<GalleryController> logger, ApplicationDbContext db, SignInManager<IdentityUser> signInManager)
         {
             _logger = logger;
             _db = db;
+            _signInManager = signInManager;
         }
 
         public IActionResult Section(string section)
@@ -33,7 +37,7 @@ namespace Portfolio.Areas.User.Controllers
                 Section = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").Include("Albums").Include("Albums.CoverPhoto").Include("Albums.CoverPhoto.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
 
-            viewModel.Section.Albums = viewModel.Section.Albums.Where(x=>!x.IsHidden).OrderByDescending(x => x.AlbumDateTime).ToList();
+            viewModel.Section.Albums = viewModel.Section.Albums.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).OrderByDescending(x => x.AlbumDateTime).ToList();
 
             if (viewModel.Section == null)
             {
@@ -51,7 +55,7 @@ namespace Portfolio.Areas.User.Controllers
         {
             AlbumViewModel viewModel = new AlbumViewModel
             {
-                Album = _db.Album.Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").Include("Photos").Include("Photos.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(album))
+                Album = _db.Album.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").Include("Photos").Include("Photos.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(album))
             };
 
             viewModel.ReturnRef = returnRef;
