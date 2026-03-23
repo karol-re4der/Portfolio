@@ -25,7 +25,13 @@
                         <div class="carousel-caption text-start">
                             <h1>Chcesz mnie poznać?</h1>
                             <p class="opacity-75">Sprawdź co napisali o mnie klienci!</p>
-                            <p><a class="btn btn-lg btn-primary" href="#reviews-section">Recenzje</a></p>
+                            <p class="d-inline">
+                                <a class="btn btn-lg btn-primary" href="#reviews-section">Recenzje</a>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@Model.Carousels.ElementAt(0).Photo.Id" class="btn btn-lg btn-primary">Edit Photo</a>
+                                }
+                            </p>
                         </div>
                     </div>/ 
                 </div>
@@ -35,7 +41,13 @@
                         <div class="carousel-caption">
                             <h1>Hej! Tu Karol :)</h1>
                             <p class="opacity-75">Zapraszam Cię do obejrzenia mojego portfolio!</p>
-                            <p><a class="btn btn-lg btn-primary" href="#display-section">Albumy</a></p>
+                            <p class="d-inline">
+                                <a class="btn btn-lg btn-primary" href="#display-section">Albumy</a>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@Model.Carousels.ElementAt(1).Photo.Id" class="btn btn-lg btn-primary">Edit Photo</a>
+                                }
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -45,7 +57,13 @@
                         <div class="carousel-caption text-end">
                             <h1>Zainteresowany zdjęciami?</h1>
                             <p class="opacity-75">Skontaktuj się ze mną!</p>
-                            <p><a class="btn btn-lg btn-primary" href="#contact-form">Kontakt</a></p>
+                            <p class="d-inline">
+                                <a class="btn btn-lg btn-primary" href="#contact-form">Kontakt</a>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@Model.Carousels.ElementAt(2).Photo.Id" class="btn btn-lg btn-primary">Edit Photo</a>
+                                }
+                            </p>
                         </div>
                     </div>
                 </div>
