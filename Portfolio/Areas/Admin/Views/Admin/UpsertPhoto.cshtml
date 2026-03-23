@@ -1,0 +1,64 @@
+﻿@model UpsertPhotoViewModel
+
+<div class="container">
+	<hr />
+	<h1>Edytuj Zdjęcie</h1>
+	<hr />
+	<form asp-action="UpsertPhoto" id="upsert-photo" enctype="multipart/form-data" autocomplete="off">
+		<input hidden asp-for="Photo.Id" type="text" class="list-group-item" id="upsert-section-id">
+
+		<div class="row">
+			<div class="col-12 col-md-8">
+				<div class="row">
+					<div class="col-12 col-md-8">
+						<label for="upsert-photo-albums" class="form-label">Part of album:</label>
+						<select asp-for="AlbumsIdSelected" asp-items="@Model.AlbumsAvailable" multiple size="6" class="form-select" id="upsert-photo-albums" data-val="false"></select>
+						<span style="display:block;" asp-validation-for="AlbumsIdSelected" class="text-danger mb-3"></span>
+					</div>
+					<div class="col-12 col-md-4">
+						<label for="upsert-photo-carousels" class="form-label">Carousel image in:</label>
+						<select asp-for="CarouselsIdSelected" asp-items="@Model.CarouselsAvailable" multiple size="6" class="form-select" id="upsert-photo-carousels" data-val="false"></select>
+						<span style="display:block;" asp-validation-for="CarouselsIdSelected" class="text-danger mb-3"></span>
+					</div>
+				</div>
+
+				<div class="row"">
+					<div class="col-12 col-md-4">
+						<label for="upsert-photo-section-covers" class="form-label">Cover in sections:</label>
+						<select asp-for="SectionCoversIdSelected" asp-items="@Model.SectionCoversAvailable" multiple size="6" class="form-select" id="upsert-photo-section-covers" data-val="false"></select>
+						<span style="display:block;" asp-validation-for="SectionCoversIdSelected" class="text-danger mb-3"></span>
+					</div>
+					<div class="col-12 col-md-4">
+						<label for="upsert-photo-album-covers" class="form-label">Cover in albums:</label>
+						<select asp-for="AlbumCoversIdSelected" asp-items="@Model.AlbumCoversAvailable" multiple size="6" class="form-select" id="upsert-photo-album-covers" data-val="false"></select>
+						<span style="display:block;" asp-validation-for="AlbumCoversIdSelected" class="text-danger mb-3"></span>
+					</div>
+					<div class="col-12 col-md-4">
+						<label for="upsert-photo-reviews" class="form-label">Cover of review:</label>
+						<select asp-for="ReviewsIdSelected" asp-items="@Model.ReviewsAvailable" multiple size="6" class="form-select" id="upsert-photo-reviews" data-val="false"></select>
+						<span style="display:block;" asp-validation-for="ReviewsIdSelected" class="text-danger mb-3"></span>
+					</div>
+				</div>
+			</div>
+
+			<hr class="d-md-none mt-3"/>
+			<div class="col-12 col-md-4">
+				<img id="upsert-preview" class="object-fit-cover border border-1 rounded-1 p-1 mb-3 mw-100" style="aspect-ratio: @((float)@ImageUtility.SECTION_COVER_WIDTH/ImageUtility.SECTION_COVER_HEIGHT);" src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(Model.Photo, 0).Path, true)" />
+				<span class="text-secondary">Dostępne rozmiary:</span>
+				<br />
+				@foreach (PhotoVersion version in Model.Photo.PhotoVersions.OrderByDescending(x=>Math.Min(x.Width, x.Height)))
+				{
+					<span class="text-secondary">@version.Width x @version.Height</span>
+					<br />
+				}
+			</div>
+		</div>
+		<hr />
+		<button class="btn btn-outline-primary" type="submit">Edytuj</button>
+		<hr />
+	</form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

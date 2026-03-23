@@ -20,7 +20,7 @@
             </div>
             <div class="carousel-inner">
                 <div class="carousel-item">
-                    <img src="@Model.Carousels.ElementAt(0).Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <img src="@(Model.Carousels.ElementAt(0).Photo == null ? ImageUtility.GetPlaceholder(false) : ImageUtility.ImageMatchSize(Model.Carousels.ElementAt(0).Photo, 0).Path)" class="carousel-image w-100 h-100" />
                     <div class="container">
                         <div class="carousel-caption text-start">
                             <h1>Chcesz mnie poznać?</h1>
@@ -30,7 +30,7 @@
                     </div>/ 
                 </div>
                 <div class="carousel-item">
-                    <img src="@Model.Carousels.ElementAt(1).Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <img src="@(Model.Carousels.ElementAt(1).Photo == null ? ImageUtility.GetPlaceholder(false) : ImageUtility.ImageMatchSize(Model.Carousels.ElementAt(1).Photo, 0).Path)" class="carousel-image w-100 h-100" />
                     <div class="container">
                         <div class="carousel-caption">
                             <h1>Hej! Tu Karol :)</h1>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="carousel-item active">
-                    <img src="@Model.Carousels.ElementAt(2).Photo.PhotoVersions.ElementAt(0).Path" class="carousel-image w-100 h-100"/>
+                    <img src="@(Model.Carousels.ElementAt(2).Photo == null ? ImageUtility.GetPlaceholder(false) : ImageUtility.ImageMatchSize(Model.Carousels.ElementAt(2).Photo, 0).Path)" class="carousel-image w-100 h-100" />
                     <div class="container">
                         <div class="carousel-caption text-end">
                             <h1>Zainteresowany zdjęciami?</h1>
@@ -91,6 +91,9 @@
                                 <div class="btn-group w-100 m-100 align-items-center">
                                     <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertReview" asp-route-reviewId="@review.Id" class="btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@review.ReviewPhotoId" class="btn btn-outline-primary">
+                                        <i class="bi bi-image-fill"></i>
                                     </a>
                                     <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveReview" asp-route-reviewId="@review.Id" class="btn btn-outline-primary requireConfirmation">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -154,6 +157,9 @@
                                 <div class="btn-group-vertical h-100 m-100 align-items-center">
                                     <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertSection" asp-route-sectionId="@sect.Id" class="btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@sect.SectionCoverId" class="btn btn-outline-primary">
+                                        <i class="bi bi-image-fill"></i>
                                     </a>
                                     <a asp-area="Admin" asp-controller="Admin" asp-action="RemoveSection" asp-route-sectionId="@sect.Id" asp-route-returnRef="@sect.UrlRef" class="btn btn-outline-primary requireConfirmation">
                                         <i class="bi bi-trash3-fill"></i>

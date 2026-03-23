@@ -14,7 +14,7 @@ namespace Portfolio.Models.Models
         public int Order { get; set; }
         public bool IsHidden { get; set; }
 
-        public Photo Photo  { get; set; }
-        public int PhotoId { get; set; }
+        public Photo ?Photo  { get; set; }
+        public int ?PhotoId { get; set; }
     }
 }

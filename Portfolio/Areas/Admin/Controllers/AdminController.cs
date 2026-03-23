@@ -852,6 +852,158 @@ namespace Portfolio.Areas.Admin.Controllers
         }
         #endregion
 
+        #region Photo
+
+        [HttpGet]
+        public IActionResult UpsertPhoto(int photoId)
+        {
+            UpsertPhotoViewModel viewModel = new UpsertPhotoViewModel();
+            Photo existingPhoto;
+
+            if (photoId > 0)
+            {
+                existingPhoto = _db.Photo.Include("PhotoVersions").FirstOrDefault(x => x.Id == photoId);
+                if (existingPhoto == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    viewModel.Photo = existingPhoto;
+
+                    viewModel.SectionCoversIdSelected = _db.Section.Where(x => x.SectionCoverId == photoId).Select(x => x.Id).ToList();
+                    viewModel.SectionCoversAvailable = _db.Section.OrderByDescending(x => viewModel.SectionCoversIdSelected.Contains(x.Id)).ThenBy(x => x.SectionName).Select(x=>new SelectListItem(x.SectionName, x.Id.ToString())).ToList();
+
+                    viewModel.AlbumCoversIdSelected = _db.Album.Where(x => x.CoverPhotoId == photoId).Select(x => x.Id).ToList();
+                    viewModel.AlbumCoversAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumCoversIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
+
+                    viewModel.AlbumsIdSelected = _db.AlbumPhoto.Where(x => x.PhotoId == photoId).Select(x => x.AlbumId).Distinct().ToList();
+                    viewModel.AlbumsAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumsIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
+
+                    viewModel.ReviewsIdSelected = _db.Review.Where(x => x.ReviewPhotoId == photoId).Select(x => x.Id).ToList();
+                    viewModel.ReviewsAvailable = _db.Review.OrderByDescending(x => viewModel.ReviewsIdSelected.Contains(x.Id)).ThenBy(x => x.ReviewAuthor).Select(x => new SelectListItem(x.ReviewAuthor, x.Id.ToString())).ToList();
+
+                    viewModel.CarouselsIdSelected = _db.Carousel.Where(x => x.PhotoId == photoId).Select(x => x.Id).ToList();
+                    viewModel.CarouselsAvailable = _db.Carousel.OrderBy(x => x.Id).Select(x => new SelectListItem(x.Id.ToString(), x.Id.ToString())).ToList();
+                }
+            }
+            else
+            {
+                //No adding new photos from here
+                return NotFound();
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpsertPhoto(UpsertPhotoViewModel viewModel)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        //Update section covers
+                        foreach(Section sect in _db.Section)
+                        {
+                            if(viewModel.SectionCoversIdSelected.Contains(sect.Id) && sect.SectionCoverId != viewModel.Photo.Id)
+                            {
+                                sect.SectionCoverId = viewModel.Photo.Id;
+                                _db.Section.Update(sect);
+                            }
+                            else if (!viewModel.SectionCoversIdSelected.Contains(sect.Id) && sect.SectionCoverId == viewModel.Photo.Id)
+                            {
+                                sect.SectionCoverId = null;
+                                _db.Section.Update(sect);
+                            }
+                        }
+
+                        //Update album covers
+                        foreach (Album alb in _db.Album)
+                        {
+                            if (viewModel.AlbumCoversIdSelected.Contains(alb.Id) && alb.CoverPhotoId != viewModel.Photo.Id)
+                            {
+                                alb.CoverPhotoId = viewModel.Photo.Id;
+                                _db.Album.Update(alb);
+                            }
+                            else if (!viewModel.AlbumCoversIdSelected.Contains(alb.Id) && alb.CoverPhotoId == viewModel.Photo.Id)
+                            {
+                                alb.CoverPhotoId = null;
+                                _db.Album.Update(alb);
+                            }
+                        }
+
+                        //Update review covers
+                        foreach (Review rev in _db.Review)
+                        { 
+                            if (viewModel.ReviewsIdSelected.Contains(rev.Id) && rev.ReviewPhotoId != viewModel.Photo.Id)
+                            {
+                                rev.ReviewPhotoId = viewModel.Photo.Id;
+                                _db.Review.Update(rev);
+                            }
+                            else if (!viewModel.ReviewsIdSelected.Contains(rev.Id) && rev.ReviewPhotoId == viewModel.Photo.Id)
+                            {
+                                rev.ReviewPhotoId = null;
+                                _db.Review.Update(rev);
+                            }
+                        }
+
+                        //Update carousels
+                        foreach (Carousel car in _db.Carousel)
+                        {
+                            if (viewModel.CarouselsIdSelected.Contains(car.Id) && car.PhotoId != viewModel.Photo.Id)
+                            {
+                                car.PhotoId = viewModel.Photo.Id;
+                                _db.Carousel.Update(car);
+                            }
+                            else if (!viewModel.CarouselsIdSelected.Contains(car.Id) && car.PhotoId == viewModel.Photo.Id)
+                            {
+                                car.PhotoId = null;
+                                _db.Carousel.Update(car);
+                            }
+                        }
+
+                        //Update album contents
+                        foreach (AlbumPhoto ap in _db.AlbumPhoto.Where(x=>x.PhotoId==viewModel.Photo.Id && !viewModel.AlbumsIdSelected.Contains(x.AlbumId)))
+                        {
+                            _db.AlbumPhoto.Remove(ap);
+                        }
+
+                        AlbumPhoto newAlbumPhoto;
+                        foreach (int albumId in viewModel.AlbumsIdSelected)
+                        {
+                            if (!(_db.AlbumPhoto.Any(x=>x.AlbumId==albumId && x.PhotoId==viewModel.Photo.Id)))
+                            {
+                                newAlbumPhoto = new AlbumPhoto()
+                                {
+                                    PhotoId = viewModel.Photo.Id,
+                                    AlbumId = albumId
+                                };
+                                _db.AlbumPhoto.Add(newAlbumPhoto);
+                            }
+                        }
+
+                        _db.SaveChanges();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+                return RedirectToAction("Index", "Home", new { area = "User"});
+            }
+            return NotFound();
+        }
+
+        #endregion
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

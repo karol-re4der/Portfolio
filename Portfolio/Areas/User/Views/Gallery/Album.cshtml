@@ -92,7 +92,7 @@
                                         <a asp-area="Admin" asp-controller="Admin" asp-action="RemovePhotoFromAlbum" asp-route-photoId=@photo.Id asp-route-albumId="@Model.Album.Id" asp-route-returnRef="@Model.Album.UrlRef" class="btn btn-outline-primary requireConfirmation">
                                             <i class="bi bi-trash3-fill"></i>
                                         </a>
-                                        <a class="btn btn-outline-primary">
+                                        <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@photo.Id" class="btn btn-outline-primary">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                             <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-path="@ImageUtility.ImageMatchSize(photo, 0).Path" data-bs-width="@@ImageUtility.ImageMatchSize(photo, 0).Width" data-bs-height="@@ImageUtility.ImageMatchSize(photo, 0).Height" data-bs-target="#singlePhotoModal">

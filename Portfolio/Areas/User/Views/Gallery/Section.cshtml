@@ -88,6 +88,9 @@
                                                 <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertAlbum" asp-route-albumId="@album.Id" class="btn btn-outline-primary">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
+                                                <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhoto" asp-route-photoId="@album.CoverPhotoId" class="btn btn-outline-primary">
+                                                    <i class="bi bi-image-fill"></i>
+                                                </a>
                                                 <a asp-area="Admin" asp-controller="Admin" asp-action="UpsertPhotos" asp-route-albumId="@album.Id" asp-route-returnRef="@Model.Section.UrlRef" class="btn btn-outline-primary">
                                                     <i class="bi bi-plus-square"></i>
                                                 </a>
