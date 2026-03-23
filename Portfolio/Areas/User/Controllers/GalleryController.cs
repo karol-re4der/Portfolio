@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Portfolio.DataAccess.Data;
 using Portfolio.Models;
+using Portfolio.Models.Models;
 using Portfolio.Models.Models.ViewModels;
 using System.Diagnostics;
 using System.Linq;
@@ -53,10 +55,32 @@ namespace Portfolio.Areas.User.Controllers
 
         public IActionResult Album(string album, string returnRef = "")
         {
-            AlbumViewModel viewModel = new AlbumViewModel
+            AlbumViewModel viewModel = new AlbumViewModel();
+
+            if (album.IsNullOrEmpty() && _signInManager.IsSignedIn(User))
             {
-                Album = _db.Album.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").Include("Photos").Include("Photos.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(album))
-            };
+                Portfolio.Models.Models.Album dummyAlbum = new Portfolio.Models.Models.Album();
+
+                List<int> photosInUse = new List<int>();
+                photosInUse.AddRange(_db.Album.Select(x => x.CoverPhotoId == null ? -1 : (int)x.CoverPhotoId));
+                photosInUse.AddRange(_db.Section.Select(x => x.SectionCoverId == null ? -1 : (int)x.SectionCoverId));
+                photosInUse.AddRange(_db.Review.Select(x => x.ReviewPhotoId == null ? -1 : (int)x.ReviewPhotoId));
+                photosInUse.AddRange(_db.Carousel.Select(x => x.PhotoId == null ? -1 : (int)x.PhotoId));
+                photosInUse.AddRange(_db.AlbumPhoto.Select(x => x.PhotoId));
+
+                photosInUse = photosInUse.Where(x => x > 0).Distinct().ToList();
+
+
+                List<Photo> photos = _db.Photo.Where(x => !photosInUse.Contains(x.Id)).Include("PhotoVersions").ToList();
+                dummyAlbum.Photos = photos;
+                dummyAlbum.AlbumName = "Unused photos";
+
+                viewModel.Album = dummyAlbum;
+            }
+            else
+            {
+                viewModel.Album = _db.Album.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").Include("Photos").Include("Photos.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(album));
+            }
 
             viewModel.ReturnRef = returnRef;
 
