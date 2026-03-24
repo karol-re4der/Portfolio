@@ -66,9 +66,10 @@
                                         <div class="ratio" style="--bs-aspect-ratio: 125%;">
                                             @{
                                                 string Cover = album.CoverPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(album.CoverPhoto, 1080).Path;
+                                                string Positioning = album.CoverPhoto == null ? "50% 50%" : string.Concat(ImageUtility.ImageGetPosition(album.CoverPhoto, "AlbumCover").PositionX, "% ", ImageUtility.ImageGetPosition(album.CoverPhoto, "AlbumCover").PositionY, "%");
                                             }
 
-                                            <img style="object-fit:cover;" class="bd-placeholder-img card-img-top" src="@Cover" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
+                                            <img style="object-fit:cover; object-position: @Positioning" class="bd-placeholder-img card-img-top" src="@Cover" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" />
                                         </div>
 
                                         <div class="card-body d-flex">

@@ -63,5 +63,15 @@ namespace Portfolio.Utility.Utility.Image
 
             return ver != null ? ver : photo.PhotoVersions.First(x => x.IsOriginal);
         }
+
+        public static PhotoPosition ImageGetPosition(Photo photo, string positionName)
+        {
+            if (photo?.PhotoPositions == null)
+            {
+                return new PhotoPosition() { PositionX = 50, PositionY = 50 };
+            }
+
+            return photo?.PhotoPositions?.FirstOrDefault(x => x.PhotoPositionType!=null && x.PhotoPositionType.Name.Equals(positionName), new PhotoPosition() { PositionX=50, PositionY=50});
+        }
     }
 }

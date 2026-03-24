@@ -27,8 +27,8 @@ namespace Portfolio.Areas.User.Controllers
         {
             HomeViewModel model = new HomeViewModel();
             Random rand = new Random();
-            model.Sections = _db.Section.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).Include("SectionCover").Include("SectionCover.PhotoVersions").OrderBy(x => x.Order).ToList();
-            model.Reviews = _db.Review.Include("ReviewPhoto").Include("ReviewPhoto.PhotoVersions").ToList().OrderBy(x=> rand.NextDouble()).Take(3).ToList();
+            model.Sections = _db.Section.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).Include("SectionCover").Include("SectionCover.PhotoVersions").Include("SectionCover.PhotoPositions").Include("SectionCover.PhotoPositions.PhotoPositionType").OrderBy(x => x.Order).ToList();
+            model.Reviews = _db.Review.Include("ReviewPhoto").Include("ReviewPhoto.PhotoVersions").Include("ReviewPhoto.PhotoPositions").Include("ReviewPhoto.PhotoPositions.PhotoPositionType").ToList().OrderBy(x=> rand.NextDouble()).Take(3).ToList();
             model.Carousels = _db.Carousel.Include("Photo").Include("Photo.PhotoVersions").ToList().OrderBy(x => x.Order).Take(3).ToList();
 
             return View(model);

@@ -90,12 +90,15 @@
             @if(Model.Reviews!=null && Model.Reviews.Count() > 0)
             {
                 string PhotoPath = "";
+                string Positioning = "";
 
                 foreach(Review review in Model.Reviews)
                 {
                     PhotoPath = review.ReviewPhoto == null ? ImageUtility.GetPlaceholder(true) : ImageUtility.ImageMatchSize(review.ReviewPhoto, 480).Path;
+                    Positioning = review.ReviewPhoto == null ? "50% 50%" : string.Concat(ImageUtility.ImageGetPosition(review.ReviewPhoto, "Review").PositionX, "% ", ImageUtility.ImageGetPosition(review.ReviewPhoto, "Review").PositionY, "%");
+
                     <figure class="col-lg-4 text-center position-relative hasOverlay">
-                        <img class="object-fit-cover rounded-circle" src="@PhotoPath" width="@ImageUtility.REVIEW_COVER_WIDTH" height="@ImageUtility.REVIEW_COVER_HEIGHT" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
+                        <img style="object-fit: cover; object-position: @Positioning" class="rounded-circle" src="@PhotoPath" width="@ImageUtility.REVIEW_COVER_WIDTH" height="@ImageUtility.REVIEW_COVER_HEIGHT" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice"></img>
 
                         <blockquote class="blockquote">
                             <p class="mb-0">@review.ReviewText</p>
@@ -167,7 +170,13 @@
                     </div>
                     <div class="col-lg-5 px-0 order-0 hasOverlay">
                         <a class="w-100 h-100" href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <img src="@ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path ,true)" style="width: 400px; height: 500px; object-fit: cover;" alt="...">
+
+                            @{
+                                string Cover = ImageUtility.PathOrPlaceholder(ImageUtility.ImageMatchSize(sect.SectionCover, ImageUtility.SECTION_COVER_WIDTH).Path, true);
+                                string Positioning = sect.SectionCover == null ? "50% 50%" : string.Concat(ImageUtility.ImageGetPosition(sect.SectionCover, "SectionCover").PositionX, "% ", ImageUtility.ImageGetPosition(sect.SectionCover, "SectionCover").PositionY, "%");
+                            }
+
+                            <img src="@Cover" style="width: 400px; height: 500px; object-fit: cover; object-position: @Positioning" alt="...">
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {

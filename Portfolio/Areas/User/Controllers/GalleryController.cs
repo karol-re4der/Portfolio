@@ -36,7 +36,7 @@ namespace Portfolio.Areas.User.Controllers
 
             SectionViewModel viewModel = new SectionViewModel
             {
-                Section = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").Include("Albums").Include("Albums.CoverPhoto").Include("Albums.CoverPhoto.PhotoVersions").FirstOrDefault(x => x.UrlRef.Equals(section))
+                Section = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").Include("Albums").Include("Albums.CoverPhoto").Include("Albums.CoverPhoto.PhotoVersions").Include("Albums.CoverPhoto.PhotoPositions").Include("Albums.CoverPhoto.PhotoPositions.PhotoPositionType").FirstOrDefault(x => x.UrlRef.Equals(section))
             };
 
             viewModel.Section.Albums = viewModel.Section.Albums.Where(x => _signInManager.IsSignedIn(User) || !x.IsHidden).OrderByDescending(x => x.AlbumDateTime).ToList();
