@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
+using Portfolio.Areas.Admin.Services.Interfaces;
+using Portfolio.Areas.Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServe
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 
