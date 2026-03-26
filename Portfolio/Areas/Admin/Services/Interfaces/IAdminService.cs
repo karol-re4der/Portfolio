@@ -14,7 +14,8 @@ namespace Portfolio.Areas.Admin.Services.Interfaces
         #region Photo
         public void UpsertPhoto(UpsertPhotoViewModel viewModel);
         public void RemovePhoto(int photoId);
-
+        public List<int> FindMissingVersions(Photo photo, float tolerance = 0.05f);
+        public Photo CreatePhotoWithVersions(IFormFile formFile);
         #endregion
 
         #region Album

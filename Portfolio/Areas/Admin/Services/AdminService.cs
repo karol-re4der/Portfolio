@@ -190,6 +190,22 @@ namespace Portfolio.Areas.Admin.Services
 
             return newPhoto;
         }
+
+        public List<int> FindMissingVersions(Photo photo, float tolerance = 0.05f)
+        {
+            List<int> missingRes = new List<int>();
+            List<ResolutionConfig> resolutions = _db.ResolutionConfig.ToList();
+
+            foreach (ResolutionConfig res in resolutions)
+            {
+                if (!(photo.PhotoVersions.Any(x => Math.Min(x.Width, x.Height) > (res.ShortSide * 1f - tolerance) && Math.Min(x.Width, x.Height) < (res.ShortSide*1f+tolerance))))
+                {
+                    missingRes.Add(res.ShortSide);
+                }
+            }
+
+            return missingRes;
+        }
         #endregion
 
         #region Album

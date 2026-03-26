@@ -409,6 +409,8 @@ namespace Portfolio.Areas.Admin.Controllers
 
                     viewModel.CarouselsIdSelected = _db.Carousel.Where(x => x.PhotoId == photoId).Select(x => x.Id).ToList();
                     viewModel.CarouselsAvailable = _db.Carousel.OrderBy(x => x.Id).Select(x => new SelectListItem(x.Id.ToString(), x.Id.ToString())).ToList();
+
+					viewModel.MissingRes = _adminService.FindMissingVersions(existingPhoto);
                 }
             }
             else

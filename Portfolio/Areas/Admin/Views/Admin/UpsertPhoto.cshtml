@@ -51,6 +51,16 @@
 					<span class="text-secondary">@version.Width x @version.Height</span>
 					<br />
 				}
+				@if (Model.MissingRes.Count()>0)
+				{
+					<span class="text-secondary text-danger">Brakujące rozmiary:</span>
+					<br />
+				}
+				@foreach (int missingRes in Model.MissingRes.OrderByDescending(x => x))
+				{
+					<span class="text-secondary">@missingRes</span>
+					<br />
+				}
 			</div>
 		</div>
 		<hr />

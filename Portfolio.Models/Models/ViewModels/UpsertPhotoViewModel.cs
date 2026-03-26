@@ -31,6 +31,10 @@ namespace Portfolio.Models.Models.ViewModels
         public List<SelectListItem> CarouselsAvailable { get; set; } = new List<SelectListItem>();
         [ValidateNever]
         public List<int> CarouselsIdSelected { get; set; } = new List<int>();
+
+        [ValidateNever]
+        public List<int> MissingRes { get; set; } = new List<int>();
+
     }
 
 }
