@@ -14,7 +14,6 @@ using Portfolio.Utility.Utility.Image;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using ResolutionConfig = Portfolio.Models.Models.ResolutionConfig;
 
 namespace Portfolio.Areas.Admin.Controllers
 {
