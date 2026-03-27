@@ -162,7 +162,13 @@
                 <div class="row mx-0 position-relative text-center text-lg-@(i%2==1?"start":"end")">
                     <div class="col-lg-7 order-1 order-lg-@(i%2) mt-4 mt-md-0">
                         <a href="@Url.Action("Section", "Gallery", new {section=sect.UrlRef})">
-                            <h2 class="featurette-heading fw-normal lh-1">@sect.SectionName</h2>
+                            <h2 class="featurette-heading fw-normal lh-1">
+                                @if (sect.IsHidden)
+                                {
+                                    <i class="bi bi-lightbulb-off"></i>
+                                }
+                                @sect.SectionName
+                            </h2>
                             <p class="lead">
                                 @sect.SectionDescription
                             </p>

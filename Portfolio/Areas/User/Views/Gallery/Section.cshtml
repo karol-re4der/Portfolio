@@ -74,6 +74,10 @@
 
                                         <div class="card-body d-flex">
                                             <strong class="card-text me-auto">
+                                                @if (SignInManager.IsSignedIn(User) && album.IsHidden)
+                                                {
+                                                    <i class="bi bi-lightbulb-off"></i>
+                                                }
                                                 @album.AlbumName
                                             </strong>
                                             <small class="text-body-secondary">
