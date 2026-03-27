@@ -39,6 +39,12 @@
 						<span style="display:block;" asp-validation-for="ReviewsIdSelected" class="text-danger mb-3"></span>
 					</div>
 				</div>
+				@if (Model.MissingRes.Count()>0)
+				{
+					Model.AddMissingRes = true;
+					<label for="upsert-photo-addmissing" class="form-label">Fix missing versions:</label>
+					<input asp-for="AddMissingRes" class="form-check" id="upsert-photo-addmissing" />
+				}
 			</div>
 
 			<hr class="d-md-none mt-3"/>
@@ -64,7 +70,7 @@
 			</div>
 		</div>
 		<hr />
-		<button class="btn btn-outline-primary" type="submit">Edytuj</button>
+		<button class="btn btn-outline-primary" type="submit">Zapisz</button>
 		<hr />
 	</form>
 </div>

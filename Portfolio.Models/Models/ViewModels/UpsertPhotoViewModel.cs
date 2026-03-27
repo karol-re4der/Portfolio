@@ -34,6 +34,7 @@ namespace Portfolio.Models.Models.ViewModels
 
         [ValidateNever]
         public List<int> MissingRes { get; set; } = new List<int>();
+        public bool AddMissingRes { get; set; } = false;
 
     }
 

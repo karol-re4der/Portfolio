@@ -16,6 +16,8 @@ namespace Portfolio.Areas.Admin.Services.Interfaces
         public void RemovePhoto(int photoId);
         public List<int> FindMissingVersions(Photo photo, float tolerance = 0.05f);
         public Photo CreatePhotoWithVersions(IFormFile formFile);
+        public PhotoVersion CreatePhotoVersion(Photo photo, int shortSide);
+
         #endregion
 
         #region Album

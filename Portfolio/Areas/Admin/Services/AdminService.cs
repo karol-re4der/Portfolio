@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Mono.TextTemplating.CodeCompilation;
+using NuGet.ContentModel;
 using Portfolio.Areas.Admin.Controllers;
 using Portfolio.Areas.Admin.Services.Interfaces;
 using Portfolio.DataAccess.Data;
@@ -6,10 +10,11 @@ using Portfolio.Models.Models;
 using Portfolio.Models.Models.ViewModels;
 using Portfolio.Utility.Utility.Image;
 using System.Drawing;
+using System.Linq;
 
 namespace Portfolio.Areas.Admin.Services
 {
-    public class AdminService: IAdminService
+    public class AdminService : IAdminService
     {
         private readonly ILogger<AdminController> _logger;
         private readonly ApplicationDbContext _db;
@@ -23,7 +28,8 @@ namespace Portfolio.Areas.Admin.Services
         }
 
         #region Photos
-        public void UpsertPhotos(UpsertPhotosViewModel viewModel){
+        public void UpsertPhotos(UpsertPhotosViewModel viewModel)
+        {
             Album album = viewModel.Album;
 
             if (viewModel.PhotosUploaded != null && viewModel.PhotosUploaded.Count() > 0)
@@ -37,7 +43,18 @@ namespace Portfolio.Areas.Admin.Services
             }
         }
 
-        public void UpsertPhoto(UpsertPhotoViewModel viewModel){
+        public void UpsertPhoto(UpsertPhotoViewModel viewModel)
+        {
+
+            if (viewModel.AddMissingRes)
+            {
+                Photo ph = _db.Photo.Include("PhotoVersions").Where(x => x.Id == viewModel.Photo.Id).FirstOrDefault();
+
+                foreach (int res in FindMissingVersions(ph))
+                {
+                    CreatePhotoVersion(ph, res);
+                }
+            }
 
             //Update section covers
             foreach (Section sect in _db.Section)
@@ -146,9 +163,10 @@ namespace Portfolio.Areas.Admin.Services
             {
                 originalX = image.Width;
                 originalY = image.Height;
-            };
+            }
+            ;
 
-            PhotoVersion newVersion = new PhotoVersion()
+            PhotoVersion originalVersion = new PhotoVersion()
             {
                 Width = originalX,
                 Height = originalY,
@@ -156,34 +174,12 @@ namespace Portfolio.Areas.Admin.Services
                 PhotoId = newPhoto.Id,
                 IsOriginal = true
             };
-            _db.PhotoVersion.Update(newVersion);
+            _db.PhotoVersion.Update(originalVersion);
 
             //Resized versions
-            double aspect = 1;
-            int longSide = 0;
-            int newWidth = 0;
-            int newHeight = 0;
-
             foreach (ResolutionConfig res in resolutions)
             {
-                if (res.ShortSide > Math.Min(originalX, originalY)) continue; //no upsizing
-                aspect = (double)originalX / originalY;
-                longSide = (int)(((double)Math.Max(originalX, originalY) / Math.Min(originalX, originalY)) * res.ShortSide);
-
-                newWidth = (aspect > 1) ? longSide : res.ShortSide;
-                newHeight = (aspect > 1) ? res.ShortSide : longSide;
-
-                photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, formFile, newWidth, newHeight);
-
-                newVersion = new PhotoVersion()
-                {
-                    Width = newWidth,
-                    Height = newHeight,
-                    Path = photoPath,
-                    PhotoId = newPhoto.Id
-                };
-
-                _db.PhotoVersion.Update(newVersion);
+                CreatePhotoVersion(newPhoto, res.ShortSide);
             }
 
             _db.SaveChanges();
@@ -198,7 +194,7 @@ namespace Portfolio.Areas.Admin.Services
 
             foreach (ResolutionConfig res in resolutions)
             {
-                if (!(photo.PhotoVersions.Any(x => Math.Min(x.Width, x.Height) > (res.ShortSide * 1f - tolerance) && Math.Min(x.Width, x.Height) < (res.ShortSide*1f+tolerance))))
+                if (!(photo.PhotoVersions.Any(x => Math.Min(x.Width, x.Height) > (res.ShortSide * 1f - tolerance) && Math.Min(x.Width, x.Height) < (res.ShortSide * 1f + tolerance))))
                 {
                     missingRes.Add(res.ShortSide);
                 }
@@ -206,6 +202,39 @@ namespace Portfolio.Areas.Admin.Services
 
             return missingRes;
         }
+
+        public PhotoVersion CreatePhotoVersion(Photo photo, int shortSide)
+        {
+            PhotoVersion original = photo.PhotoVersions.OrderByDescending(x => x.IsOriginal).ThenBy(x => Math.Max(x.Width, x.Height)).FirstOrDefault();
+            if (original == null) return null; //should not happen
+
+            //Resized versions
+            double aspect = 1;
+            int longSide = 0;
+            int newWidth = 0;
+            int newHeight = 0;
+
+            if (shortSide > Math.Min(original.Width, original.Height)) return null; //no upsizing
+            aspect = (double)original.Width / original.Height;
+            longSide = (int)(((double)Math.Max(original.Width, original.Height) / Math.Min(original.Height, original.Width)) * shortSide);
+
+            newWidth = (aspect > 1) ? longSide : shortSide;
+            newHeight = (aspect > 1) ? shortSide : longSide;
+
+            string photoPath = ImageUtility.AddNewPhotoFile(_webHostEnvironment, original.Path, newWidth, newHeight);
+
+            PhotoVersion newVersion = new PhotoVersion()
+            {
+                Width = newWidth,
+                Height = newHeight,
+                Path = photoPath,
+                PhotoId = photo.Id
+            };
+
+            _db.PhotoVersion.Update(newVersion);
+            return newVersion;
+        }
+
         #endregion
 
         #region Album
@@ -282,7 +311,7 @@ namespace Portfolio.Areas.Admin.Services
             {
                 existingCarousel = _db.Carousel.Where(x => x.Id == viewModel.CarouselLeft.Id).First();
                 Photo newPhoto = CreatePhotoWithVersions(viewModel.CarouselPhotoLeft);
-                existingCarousel.PhotoId=newPhoto.Id;
+                existingCarousel.PhotoId = newPhoto.Id;
                 _db.Carousel.Update(existingCarousel);
                 _db.SaveChanges();
             }

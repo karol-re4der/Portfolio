@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Portfolio.Models.Models;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace Portfolio.Utility.Utility.Image
 {
@@ -49,7 +50,37 @@ namespace Portfolio.Utility.Utility.Image
 			return newPath;
 		}
 
-		public static string PathOrPlaceholder(string path, bool vertical)
+        public static string AddNewPhotoFile(IWebHostEnvironment env, string path, int targetWidth = 0, int targetHeight = 0)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return "";
+
+            string fileName = Guid.NewGuid() + Path.GetExtension(path);
+
+            string newPath = System.IO.Path.Join(PATH_PHOTOS + fileName);
+            string fullPath = Path.Join(env.WebRootPath, newPath);
+            string fullOldPath = Path.Join(env.WebRootPath, path);
+
+            using (FileStream newFileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                using (FileStream originalFileStream = File.Open(fullOldPath, FileMode.Open))
+                {
+                    if (targetWidth + targetHeight != 0)
+                    {
+                        var tmpImage = System.Drawing.Image.FromStream(originalFileStream);
+                        var resized = new Bitmap(tmpImage, new Size(targetWidth, targetHeight));
+                        resized.Save(newFileStream, ImageFormat.Jpeg);
+                    }
+                    else
+                    {
+                        originalFileStream.CopyTo(newFileStream);
+                    }
+                }
+            }
+
+            return newPath;
+        }
+
+        public static string PathOrPlaceholder(string path, bool vertical)
 		{
 			return string.IsNullOrWhiteSpace(path) ? GetPlaceholder(vertical) : path;
 		}
