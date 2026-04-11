@@ -16,12 +16,15 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IAdminService, AdminService>();
 
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = null);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/User/Home/Error");
+    app.UseStatusCodePagesWithReExecute("/User/Home/Error", "?statusCode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

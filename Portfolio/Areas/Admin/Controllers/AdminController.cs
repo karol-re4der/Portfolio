@@ -39,27 +39,41 @@ namespace Portfolio.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult UpsertSection(int sectionId=0)
         {
-			UpsertSectionViewModel viewModel = new UpsertSectionViewModel();
-			Section existingSection;
-
-			if (sectionId > 0)
+			if (_signInManager.IsSignedIn(User))
 			{
-				existingSection = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").FirstOrDefault(x => x.Id == sectionId);
-				if (existingSection == null)
+				try
 				{
-					return NotFound();
+					UpsertSectionViewModel viewModel = new UpsertSectionViewModel();
+					Section existingSection;
+
+					if (sectionId > 0)
+					{
+						existingSection = _db.Section.Include("SectionCover").Include("SectionCover.PhotoVersions").FirstOrDefault(x => x.Id == sectionId);
+						if (existingSection == null)
+						{
+							return NoContent();
+						}
+						else
+						{
+							viewModel.Section = existingSection;
+						}
+					}
+					else
+					{
+						viewModel.Section = new Section();
+					}
+
+					return View(viewModel);
 				}
-				else
+				catch(Exception ex)
 				{
-					viewModel.Section = existingSection;
+					return StatusCode(503);
 				}
 			}
 			else
 			{
-				viewModel.Section = new Section();
+				return Unauthorized();
 			}
-
-			return View(viewModel);
 		}
 
 		[HttpPost]
@@ -75,41 +89,51 @@ namespace Portfolio.Areas.Admin.Controllers
                     }
 					else
 					{
-						return NotFound();
+						return BadRequest();
 					}
 				}
 				catch (Exception e)
 				{
-					return NotFound();
+					return StatusCode(503);
 				}
 
 				return RedirectToAction("Section", "Gallery", new { area = "User", section = viewModel.Section.UrlRef });
 			}
-			return NotFound();
-		}
+			else
+			{
+				return Unauthorized();
+            }
+        }
 
-		[HttpGet]
+        [HttpGet]
 		public IActionResult RemoveSection(int sectionId)
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-				Section section = _db.Section.FirstOrDefault(x => x.Id == sectionId);
-				if (section == null)
+				try
 				{
-					return NotFound();
+					Section section = _db.Section.FirstOrDefault(x => x.Id == sectionId);
+					if (section == null)
+					{
+						return NoContent();
+					}
+
+					_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.SectionId == sectionId));
+					_db.SaveChanges();
+
+					_db.Section.Remove(section);
+					_db.SaveChanges();
+
+					return RedirectToAction("Index", "Home", new { area = "User" });
+                }
+				catch(Exception ex)
+				{
+					return StatusCode(503);
 				}
-
-				_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.SectionId == sectionId));
-				_db.SaveChanges();
-
-				_db.Section.Remove(section);
-				_db.SaveChanges();
-
-                return RedirectToAction("Index", "Home", new { area = "User" });
             }
             else
 			{
-				return NotFound();
+				return Unauthorized();
 			}
 		}
 		#endregion
@@ -125,53 +149,69 @@ namespace Portfolio.Areas.Admin.Controllers
 					if (ModelState.IsValid)
 					{
                         _adminService.UpsertAlbum(viewModel);
+                        return RedirectToAction("Album", "Gallery", new { area = "User", album = viewModel.Album.UrlRef, returnRef = "" });
+                    }
+                    else
+					{
+						return this.BadRequest();
+					}
+                }
+                catch (Exception e)
+                {
+                    return StatusCode(503);
+                }
+            }
+			else
+			{
+				return Unauthorized();
+            }
+        }
+
+        [HttpGet]
+		public IActionResult UpsertAlbum(int albumId = 0, int targetSectionId = 0)
+        {
+			if (_signInManager.IsSignedIn(User))
+			{
+				try
+				{
+					UpsertAlbumViewModel viewModel = new UpsertAlbumViewModel();
+					Album existingAlbum;
+
+					if (albumId > 0)
+					{
+						existingAlbum = _db.Album.Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").FirstOrDefault(x => x.Id == albumId);
+						if (existingAlbum == null)
+						{
+							return NoContent();
+						}
+						else
+						{
+							List<int> sectionIdSelected = _db.AlbumSection.Where(x => x.AlbumId == albumId).Select(x => x.SectionId).ToList();
+
+							viewModel.Album = existingAlbum;
+							viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = sectionIdSelected.Contains(x.Id) }).ToList();
+							viewModel.SectionIdSelected = sectionIdSelected;
+						}
 					}
 					else
 					{
-						return NotFound();
+						viewModel.Album = new Album();
+						viewModel.Album.AlbumDateTime = DateTime.Now;
+						viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = x.Id == targetSectionId }).ToList();
+						viewModel.SectionIdSelected.Add(targetSectionId);
 					}
-				}
-				catch (Exception e)
+
+                    return View(viewModel);
+                }
+				catch(Exception ex)
 				{
-					return NotFound();
+					return StatusCode(503);
 				}
-
-				return RedirectToAction("Album", "Gallery", new { area="User", album = viewModel.Album.UrlRef, returnRef = "" });
 			}
-			return NotFound();
-		}
-
-		[HttpGet]
-		public IActionResult UpsertAlbum(int albumId = 0, int targetSectionId = 0)
-        {
-            UpsertAlbumViewModel viewModel = new UpsertAlbumViewModel();
-            Album existingAlbum;
-
-            if (albumId > 0)
-            {
-                existingAlbum = _db.Album.Include("CoverPhoto").Include("CoverPhoto.PhotoVersions").FirstOrDefault(x => x.Id == albumId);
-                if (existingAlbum == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    List<int> sectionIdSelected = _db.AlbumSection.Where(x => x.AlbumId == albumId).Select(x => x.SectionId).ToList();
-
-                    viewModel.Album = existingAlbum;
-                    viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = sectionIdSelected.Contains(x.Id) }).ToList();
-					viewModel.SectionIdSelected = sectionIdSelected;
-                }
+			else
+			{
+                return Unauthorized();
             }
-            else
-            {
-                viewModel.Album = new Album();
-                viewModel.Album.AlbumDateTime = DateTime.Now;
-                viewModel.SectionsAvailable = _db.Section.Select(x => new SelectListItem() { Text = x.SectionName, Value = x.Id.ToString(), Selected = x.Id==targetSectionId }).ToList();
-				viewModel.SectionIdSelected.Add(targetSectionId);
-            }
-
-            return View(viewModel);
         }
 
 		[HttpGet]
@@ -179,24 +219,34 @@ namespace Portfolio.Areas.Admin.Controllers
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-				Album album = _db.Album.FirstOrDefault(x => x.Id == albumId);
-				if (album == null)
+				try
 				{
-					return NotFound();
+					Album album = _db.Album.FirstOrDefault(x => x.Id == albumId);
+					if (album == null)
+					{
+						return NoContent();
+					}
+
+					_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId));
+					_db.SaveChanges();
+
+					_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == albumId));
+					_db.SaveChanges();
+
+					_db.Album.Remove(album);
+					_db.SaveChanges();
+
+					return RedirectToAction("Section", "Gallery", new { area = "User", section = returnRef });
 				}
-
-				_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId));
-				_db.SaveChanges();
-
-				_db.AlbumSection.RemoveRange(_db.AlbumSection.Where(x => x.AlbumId == albumId));
-				_db.SaveChanges();
-
-				_db.Album.Remove(album);
-				_db.SaveChanges();
-
-                return RedirectToAction("Section", "Gallery", new { area = "User", section = returnRef });
+				catch(Exception ex)
+				{
+					return StatusCode(503);
+				}
             }
-			return NotFound();
+			else
+			{
+                return Unauthorized();
+            }
         }
 		#endregion
 
@@ -204,22 +254,36 @@ namespace Portfolio.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult UpsertPhotos(int albumId)
         {
-			UpsertPhotosViewModel viewModel = new();
-
-			if (albumId > 0)
+			if (_signInManager.IsSignedIn(User))
 			{
-				viewModel.Album = _db.Album.Include("Photos").FirstOrDefault(x => x.Id == albumId);
-				if (viewModel.Album == null)
+				try
 				{
-					return NotFound();
+					UpsertPhotosViewModel viewModel = new();
+
+					if (albumId > 0)
+					{
+						viewModel.Album = _db.Album.Include("Photos").FirstOrDefault(x => x.Id == albumId);
+						if (viewModel.Album == null)
+						{
+							return NoContent();
+						}
+					}
+					else
+					{
+						return NoContent();
+					}
+
+					return View(viewModel);
+				}
+				catch(Exception ex)
+				{
+					return StatusCode(503);
 				}
 			}
 			else
 			{
-                return NotFound();
+				return this.Unauthorized();
 			}
-
-            return View(viewModel);
         }
 
         [HttpGet]
@@ -227,12 +291,22 @@ namespace Portfolio.Areas.Admin.Controllers
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-				_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId && x.PhotoId == photoId));
-				_db.SaveChanges();
+				try
+				{
+					_db.AlbumPhoto.RemoveRange(_db.AlbumPhoto.Where(x => x.AlbumId == albumId && x.PhotoId == photoId));
+					_db.SaveChanges();
 
-				return RedirectToAction("Album", "Gallery", new { area = "User", album = returnRef });
+					return RedirectToAction("Album", "Gallery", new { area = "User", album = returnRef });
+				}
+				catch(Exception ex)
+				{
+					return this.StatusCode(503);
+				}
 			}
-			return NotFound();
+			else
+			{
+                return Unauthorized();
+            }
         }
 
         [HttpPost]
@@ -248,17 +322,17 @@ namespace Portfolio.Areas.Admin.Controllers
 					}
 					else
 					{
-						return NotFound();
+						return this.BadRequest();
 					}
 				}
 				catch (Exception e)
 				{
-					return NotFound();
-				}
+					return this.StatusCode(503);
+                }
 
-				return RedirectToAction("Album", "Gallery", new { area = "User", album = viewModel.Album.UrlRef });
+                return RedirectToAction("Album", "Gallery", new { area = "User", album = viewModel.Album.UrlRef });
 			}
-			return NotFound();
+			return this.Unauthorized();
 		}
 		#endregion
 
@@ -276,43 +350,60 @@ namespace Portfolio.Areas.Admin.Controllers
 					}
 					else
 					{
-						return NotFound();
+						return BadRequest();
 					}
-				}
-				catch (Exception e)
-				{
-					return NotFound();
-				}
 
-				return RedirectToAction("Index", "Home", new { area = "User"});
-			}
-			return NotFound();
-		}
-
-		[HttpGet]
-		public IActionResult UpsertReview(int reviewId = 0)
-		{
-			UpsertReviewViewModel viewModel = new UpsertReviewViewModel();
-			Review existingReview;
-
-			if (reviewId > 0)
-			{
-				existingReview = _db.Review.Include("ReviewPhoto").Include("ReviewPhoto.PhotoVersions").FirstOrDefault(x => x.Id == reviewId);
-				if (existingReview == null)
+                    return RedirectToAction("Index", "Home", new { area = "User" });
+                }
+                catch (Exception e)
 				{
-					return NotFound();
-				}
-				else
-				{
-					viewModel.Review = existingReview;
+					return StatusCode(503);
 				}
 			}
 			else
 			{
-				viewModel.Review = new Review();
-			}
+                return Unauthorized();
+            }
+        }
 
-			return View(viewModel);
+		[HttpGet]
+		public IActionResult UpsertReview(int reviewId = 0)
+		{
+			if (_signInManager.IsSignedIn(User))
+			{
+				try
+				{
+					UpsertReviewViewModel viewModel = new UpsertReviewViewModel();
+					Review existingReview;
+
+					if (reviewId > 0)
+					{
+						existingReview = _db.Review.Include("ReviewPhoto").Include("ReviewPhoto.PhotoVersions").FirstOrDefault(x => x.Id == reviewId);
+						if (existingReview == null)
+						{
+							return NoContent();
+						}
+						else
+						{
+							viewModel.Review = existingReview;
+						}
+					}
+					else
+					{
+						viewModel.Review = new Review();
+					}
+
+					return View(viewModel);
+				}
+				catch(Exception ex)
+				{
+					return StatusCode(503);
+				}
+			}
+			else
+			{
+				return Unauthorized();
+			}
 		}
 
 		[HttpGet]
@@ -320,19 +411,29 @@ namespace Portfolio.Areas.Admin.Controllers
 		{
 			if (_signInManager.IsSignedIn(User))
 			{
-				Review review = _db.Review.FirstOrDefault(x => x.Id == reviewId);
-				if (review == null)
+				try
 				{
-					return NotFound();
+					Review review = _db.Review.FirstOrDefault(x => x.Id == reviewId);
+					if (review == null)
+					{
+						return NoContent();
+					}
+
+					_db.Review.Remove(review);
+					_db.SaveChanges();
+
+					return RedirectToAction("Index", "Home", new { area = "User" });
 				}
-
-				_db.Review.Remove(review);
-				_db.SaveChanges();
-
-				return RedirectToAction("Index", "Home", new { area = "User"});
+				catch(Exception ex)
+				{
+					return StatusCode(503);
+				}
 			}
-			return NotFound();
-		}
+			else
+			{
+                return Unauthorized();
+            }
+        }
         #endregion
 
         #region Carousel
@@ -344,35 +445,51 @@ namespace Portfolio.Areas.Admin.Controllers
                 try
                 {
 					_adminService.UpsertCarousel(viewModel);
+                    return RedirectToAction("Index", "Home", new { area = "User" });
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    return StatusCode(503);
                 }
-
-                return RedirectToAction("Index", "Home", new { area = "User" });
             }
-            return NotFound();
+			else
+			{
+				return Unauthorized();
+			}
         }
 
         [HttpGet]
         public IActionResult UpsertCarousel()
         {
-            UpsertCarouselViewModel viewModel = new UpsertCarouselViewModel();
+			if (_signInManager.IsSignedIn(User))
+			{
+				try
+				{
+					UpsertCarouselViewModel viewModel = new UpsertCarouselViewModel();
 
-            List<Carousel> carousels = _db.Carousel.Include("Photo").Include("Photo.PhotoVersions").OrderBy(x => x.Order).Take(3).ToList();
-            if(carousels != null && carousels.Count() > 2)
-            {
-                viewModel.CarouselLeft = carousels.ElementAt(0);
-                viewModel.CarouselMid = carousels.ElementAt(1);
-                viewModel.CarouselRight = carousels.ElementAt(2);
+					List<Carousel> carousels = _db.Carousel.Include("Photo").Include("Photo.PhotoVersions").OrderBy(x => x.Order).Take(3).ToList();
+					if (carousels != null && carousels.Count() > 2)
+					{
+						viewModel.CarouselLeft = carousels.ElementAt(0);
+						viewModel.CarouselMid = carousels.ElementAt(1);
+						viewModel.CarouselRight = carousels.ElementAt(2);
 
-                return View(viewModel);
-            }
-            else
-            {
-                return NotFound();
-            }
+						return View(viewModel);
+					}
+					else
+					{
+						return NoContent();
+					}
+				}
+				catch(Exception ex)
+				{
+					return StatusCode(503);
+				}
+			}
+			else
+			{
+				return Unauthorized();
+			}
         }
         #endregion
 
@@ -381,45 +498,59 @@ namespace Portfolio.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult UpsertPhoto(int photoId)
         {
-            UpsertPhotoViewModel viewModel = new UpsertPhotoViewModel();
-            Photo existingPhoto;
+			if (_signInManager.IsSignedIn(User))
+			{
+				try
+				{
+					UpsertPhotoViewModel viewModel = new UpsertPhotoViewModel();
+					Photo existingPhoto;
 
-            if (photoId > 0)
-            {
-                existingPhoto = _db.Photo.Include("PhotoVersions").FirstOrDefault(x => x.Id == photoId);
-                if (existingPhoto == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    viewModel.Photo = existingPhoto;
+					if (photoId > 0)
+					{
+						existingPhoto = _db.Photo.Include("PhotoVersions").FirstOrDefault(x => x.Id == photoId);
+						if (existingPhoto == null)
+						{
+							return NoContent();
+						}
+						else
+						{
+							viewModel.Photo = existingPhoto;
 
-                    viewModel.SectionCoversIdSelected = _db.Section.Where(x => x.SectionCoverId == photoId).Select(x => x.Id).ToList();
-                    viewModel.SectionCoversAvailable = _db.Section.OrderByDescending(x => viewModel.SectionCoversIdSelected.Contains(x.Id)).ThenBy(x => x.SectionName).Select(x=>new SelectListItem(x.SectionName, x.Id.ToString())).ToList();
+							viewModel.SectionCoversIdSelected = _db.Section.Where(x => x.SectionCoverId == photoId).Select(x => x.Id).ToList();
+							viewModel.SectionCoversAvailable = _db.Section.OrderByDescending(x => viewModel.SectionCoversIdSelected.Contains(x.Id)).ThenBy(x => x.SectionName).Select(x => new SelectListItem(x.SectionName, x.Id.ToString())).ToList();
 
-                    viewModel.AlbumCoversIdSelected = _db.Album.Where(x => x.CoverPhotoId == photoId).Select(x => x.Id).ToList();
-                    viewModel.AlbumCoversAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumCoversIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
+							viewModel.AlbumCoversIdSelected = _db.Album.Where(x => x.CoverPhotoId == photoId).Select(x => x.Id).ToList();
+							viewModel.AlbumCoversAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumCoversIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
 
-                    viewModel.AlbumsIdSelected = _db.AlbumPhoto.Where(x => x.PhotoId == photoId).Select(x => x.AlbumId).Distinct().ToList();
-                    viewModel.AlbumsAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumsIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
+							viewModel.AlbumsIdSelected = _db.AlbumPhoto.Where(x => x.PhotoId == photoId).Select(x => x.AlbumId).Distinct().ToList();
+							viewModel.AlbumsAvailable = _db.Album.OrderByDescending(x => viewModel.AlbumsIdSelected.Contains(x.Id)).ThenBy(x => x.AlbumName).Select(x => new SelectListItem(x.AlbumName, x.Id.ToString())).ToList();
 
-                    viewModel.ReviewsIdSelected = _db.Review.Where(x => x.ReviewPhotoId == photoId).Select(x => x.Id).ToList();
-                    viewModel.ReviewsAvailable = _db.Review.OrderByDescending(x => viewModel.ReviewsIdSelected.Contains(x.Id)).ThenBy(x => x.ReviewAuthor).Select(x => new SelectListItem(x.ReviewAuthor, x.Id.ToString())).ToList();
+							viewModel.ReviewsIdSelected = _db.Review.Where(x => x.ReviewPhotoId == photoId).Select(x => x.Id).ToList();
+							viewModel.ReviewsAvailable = _db.Review.OrderByDescending(x => viewModel.ReviewsIdSelected.Contains(x.Id)).ThenBy(x => x.ReviewAuthor).Select(x => new SelectListItem(x.ReviewAuthor, x.Id.ToString())).ToList();
 
-                    viewModel.CarouselsIdSelected = _db.Carousel.Where(x => x.PhotoId == photoId).Select(x => x.Id).ToList();
-                    viewModel.CarouselsAvailable = _db.Carousel.OrderBy(x => x.Id).Select(x => new SelectListItem(x.Id.ToString(), x.Id.ToString())).ToList();
+							viewModel.CarouselsIdSelected = _db.Carousel.Where(x => x.PhotoId == photoId).Select(x => x.Id).ToList();
+							viewModel.CarouselsAvailable = _db.Carousel.OrderBy(x => x.Id).Select(x => new SelectListItem(x.Id.ToString(), x.Id.ToString())).ToList();
 
-					viewModel.MissingRes = _adminService.FindMissingVersions(existingPhoto);
-                }
-            }
-            else
-            {
-                //No adding new photos from here
-                return NotFound();
-            }
+							viewModel.MissingRes = _adminService.FindMissingVersions(existingPhoto);
 
-            return View(viewModel);
+                            return View(viewModel);
+                        }
+                    }
+					else
+					{
+						//No adding new photos from here
+						return this.BadRequest();
+					}
+				}
+				catch(Exception ex)
+				{
+					return StatusCode(503);
+				}
+			}
+			else
+			{
+				return Unauthorized();
+			}
         }
 
         [HttpPost]
@@ -427,32 +558,28 @@ namespace Portfolio.Areas.Admin.Controllers
         {
             if (_signInManager.IsSignedIn(User))
             {
-
                 try
                 {
                     if (ModelState.IsValid)
                     {
                         _adminService.UpsertPhoto(viewModel);
+                        return RedirectToAction("Index", "Home", new { area = "User" });
                     }
                     else
                     {
-                        return NotFound();
+                        return BadRequest();
                     }
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    return StatusCode(503);
                 }
-                return RedirectToAction("Index", "Home", new { area = "User"});
             }
-            return NotFound();
+			else
+			{
+                return Unauthorized();
+            }
         }
         #endregion
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }
